@@ -2,7 +2,21 @@ package model;
 
 import java.util.Date;
 
-public abstract class Category {
+enum Type {
+    EARNING,
+    SPENDING,
+    INVESTING,
+    SAVING,
+    LENDING,
+    BORROWING
+}
+
+public class Category {
+
+    private Type type;
+
+
+
     private Date date;
     private String type;
     private int value;
