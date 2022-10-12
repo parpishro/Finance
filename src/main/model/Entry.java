@@ -1,19 +1,22 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Entry {
+public class Entry implements Serializable {
     private String type;
-    private Date date;
+    private String date;
     private double value;
     private String from;
-    private String to;
 
-    public Entry(String type, Date date, double value, String from, String to) {
+    public Entry(String type, String date, double value, String from) {
         this.type = type;
         this.date = date;
         this.value = value;
         this.from = from;
-        this.to = to;
+    }
+
+    public double getValue() {
+        return value;
     }
 }

@@ -1,70 +1,89 @@
 package ui;
 
-import model.Account;
-import model.Category;
-import model.Entry;
-import model.Transaction;
+import model.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.*;
+
 import java.util.Scanner;
-
-import static jdk.internal.misc.OSEnvironment.initialize;
 
 
 public class FinanceApp {
-    private Category category;
-    private Account account;
-    private Transaction transaction;
-    private Scanner input;
 
-    public FinanceApp() throws ParseException {
-        runApp();
-    }
+    private Master master;
+    private Bookkeeping bookkeeping;
 
-    private void runApp() throws ParseException {
+
+
+    public FinanceApp() throws IOException, ClassNotFoundException {
 
         boolean continuing = true;
-        String command = null;
+        String command;
 
         initialize();
 
         while (continuing) {
+            Scanner input = new Scanner(System.in);
             System.out.println("Enter a command ('q': Quit, 'n': New Transaction, 'b': Balance)");
             command = input.next();
+
             switch (command) {
                 case "q":
                     continuing = false;
+                    quitSafe();
                     break;
                 case "n":
                     newEntry();
                     break;
                 case "b":
-                    getBalance();
-                    break;;
+                    double balance = getBalance();
+                    System.out.println(balance);
+                    break;
                 default:
                     System.out.println("Try again!");
-
             }
 
         }
+    }
 
+
+    private void initialize() throws IOException, ClassNotFoundException {
+        try {
+            master = IO.loadMaster();
+            bookkeeping = IO.loadBookkeeping();
+        } catch (FileNotFoundException e) {
+            master = new Master();
+            master.addAccount("Cash", true);
+            bookkeeping = new Bookkeeping();
+        }
+
+    }
+
+    private void quitSafe() {
+        try {
+            IO.saveMaster(master);
+            IO.saveBookkeeping(bookkeeping);
+        } catch (IOException e) {
+            System.out.println("something went wrong!");
+        }
+
+    }
+
+    private void newEntry() {
         Scanner inputType = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Enter transaction type: ");
         String type = inputType.nextLine();
 
         Scanner input = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Enter transaction date, value, 'from' account, and 'to' account: ");
-        Date date = new SimpleDateFormat("yyyy-mm-dd").parse(input.nextLine());
+        String date = input.next();
         double value = input.nextDouble();
-        String from = input.nextLine();
-        String to = input.next();
+        String from = input.next();
 
-
-        Entry entry = new Entry(type, date, value, from, to);
+        Account acc = master.getAccount(from);
+        acc.addEntry(type, date, value, from);
     }
 
-
-
+    private double getBalance() {
+        return master.getBalance();
+    }
 }
