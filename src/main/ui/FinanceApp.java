@@ -15,17 +15,13 @@ public class FinanceApp {
 
 
     public FinanceApp() throws IOException, ClassNotFoundException {
-
         boolean continuing = true;
         String command;
 
         initialize();
 
         while (continuing) {
-            Scanner input = new Scanner(System.in);
-            System.out.println("Enter a command ('q': Quit, 'n': New Transaction, 'b': Balance)");
-            command = input.next();
-
+            command = getString();
             switch (command) {
                 case "q":
                     continuing = false;
@@ -34,6 +30,9 @@ public class FinanceApp {
                 case "n":
                     newEntry();
                     break;
+                case "r":
+                    removeEntry();
+                    break;
                 case "b":
                     double balance = getBalance();
                     System.out.println(balance);
@@ -41,8 +40,20 @@ public class FinanceApp {
                 default:
                     System.out.println("Try again!");
             }
-
         }
+    }
+
+    private String getString() {
+        String command;
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter a command shortcut:");
+        System.out.println("\n Quit(q) \n New Transaction(n) \n Remove Transaction(r) \n Show Balance(b)");
+        command = input.next();
+        return command;
+    }
+
+    private void removeEntry() {
+        System.out.println("this shouldn't happen!");
     }
 
 

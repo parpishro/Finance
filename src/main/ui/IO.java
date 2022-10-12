@@ -6,8 +6,8 @@ import model.Master;
 import java.io.*;
 
 public class IO implements Serializable {
-    static String masterPath = "/Users/parhampishrobat/IdeaProjects/project_f0h3b/data/master.txt";
-    static String bookkeepingPath = "/Users/parhampishrobat/IdeaProjects/project_f0h3b/data/bookkeeping.txt";
+    static String masterPath = "../project_f0h3b/data/master.txt";
+    static String bookkeepingPath = "../project_f0h3b/data/bookkeeping.txt";
 
     public static Master loadMaster() throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(masterPath);

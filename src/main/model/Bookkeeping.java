@@ -3,9 +3,13 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+//
 public class Bookkeeping implements Serializable {
     private ArrayList<Category> categories;
 
+    // REQUIRE:
+    // MODIFIES:
+    // EFFECT:
     public Bookkeeping() {
         categories = new ArrayList<>();
         categories.add(new Category("Earning", true));

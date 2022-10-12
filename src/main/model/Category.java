@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class Category implements Serializable {
 
-    private String type;
-    private boolean isPos;
+    private final String type;
+    private final boolean isPos;
     private double total;
-    private ArrayList<Transaction> transactions = new ArrayList<>();
+    private final ArrayList<Transaction> transactions;
 
     public Category(String type, boolean isPos) {
         this.type = type;
