@@ -12,16 +12,13 @@ public class FinanceApp {
     private Master master;
     private Bookkeeping bookkeeping;
 
-
-
     public FinanceApp() throws IOException, ClassNotFoundException {
         boolean continuing = true;
-        String command;
 
         initialize();
 
         while (continuing) {
-            command = getString();
+            String command = getString();
             switch (command) {
                 case "q":
                     continuing = false;
@@ -47,7 +44,7 @@ public class FinanceApp {
         String command;
         Scanner input = new Scanner(System.in);
         System.out.println("Enter a command shortcut:");
-        System.out.println("\n Quit(q) \n New Transaction(n) \n Remove Transaction(r) \n Show Balance(b)");
+        System.out.println("Quit(q) \n New Transaction(n) \n Remove Transaction(r) \n Show Balance(b)");
         command = input.next();
         return command;
     }

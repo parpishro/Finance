@@ -6,6 +6,8 @@ import java.util.ArrayList;
 public class Master implements Serializable {
     private ArrayList<Account> accounts;
 
+    private static final long serialVersionUID = 1L;
+
     public Master() {
         accounts = new ArrayList<>();
     }

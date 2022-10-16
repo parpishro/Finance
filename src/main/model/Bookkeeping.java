@@ -7,6 +7,8 @@ import java.util.ArrayList;
 public class Bookkeeping implements Serializable {
     private ArrayList<Category> categories;
 
+    private static final long serialVersionUID = 1L;
+
     // REQUIRE:
     // MODIFIES:
     // EFFECT:

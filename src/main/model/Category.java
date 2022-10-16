@@ -10,6 +10,8 @@ public class Category implements Serializable {
     private double total;
     private final ArrayList<Transaction> transactions;
 
+
+
     public Category(String type, boolean isPos) {
         this.type = type;
         this.isPos = isPos;
