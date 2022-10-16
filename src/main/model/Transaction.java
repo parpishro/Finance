@@ -1,21 +1,27 @@
 package model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class Transaction implements Serializable {
-    private String type;
-    private String date;
-    private double value;
-    private String from;
-    private String to;
+    private static final long serialVersionUID = 1L;
+    private final int index;
+    private final String type;
+    private final String date;
+    private final int value;
+    private final Account from;
+    private final Account to;
 
-    public Transaction(String type, String date, double value, String from, String to) {
+    public Transaction(int index, String type, String date, int value, Account from, Account to) {
+        this.index = index;
         this.type = type;
         this.date = date;
         this.value = value;
         this.from = from;
         this.to = to;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public String getType() {
@@ -26,15 +32,15 @@ public class Transaction implements Serializable {
         return date;
     }
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
 
-    public String getFrom() {
+    public Account getFrom() {
         return from;
     }
 
-    public String getTo() {
+    public Account getTo() {
         return to;
     }
 
