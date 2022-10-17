@@ -163,12 +163,13 @@ public class TestAccount {
 
         acc5.addEntry(entry4, true);
         acc5.addEntry(entry5, false);
-        acc5.removeEntry(4, false);
         acc5.removeEntry(5, true);
+        acc5.removeEntry(4, false);
 
         assertEquals(0, acc5.getEntries().size());
         assertEquals(-15000, acc5.getBalance());
     }
+
 
     @Test
     void testSetBalanceManual() {
