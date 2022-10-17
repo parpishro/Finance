@@ -9,38 +9,46 @@ public class Master implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Account> accounts;
-    private List<Transaction> allTransactions;
+    private final List<Account> accounts;
+    private final List<Transaction> allTransactions;
     private int totalBalance;
 
 
-    // EFFECT: constructs a master object adding a default account of cash with zero total balance and no transactions
+    // EFFECT: constructs a master object consisting of empty accounts list and allTransaction list with 0 totalBalance
     public Master() {
         accounts = new ArrayList<>();
         allTransactions = new ArrayList<>();
         totalBalance = 0;
     }
 
+    // REQUIRES: a unique (non-existing) account name
     // MODIFIES: this
-    // EFFECT: adds an account to accounts with given name and isPos and creates a unique index for it
-    public void addAccount(String name, boolean isPos, int balance) {
+    // EFFECT: adds the given account to the accounts after updating its default index (-1) with a unique index, and
+    // updates the total balance
+    public void addAccount(Account account) {
         int index = accounts.size();
-        try {
-            while (accounts.contains(accounts.get(index))) {
+        if (index != 0) {
+            int highestIndex = accounts.get(index - 1).getIndex();
+            while (highestIndex >= index) {
                 index++;
             }
-        } catch (Exception e) {
-            accounts.add(new Account(index, name, isPos, balance));
         }
+        account.setIndex(index);
+        accounts.add(account);
+        totalBalance += account.getBalance();
     }
 
-    // REQUIRES: given account name must be a valid account name
+    // REQUIRES: given account name must be a (existing) account name, for the given account balance = 0
     // MODIFIES: this
-    // EFFECT: removes the given account from accounts, if given account has zero balance, otherwise returns false
+    // EFFECT: removes the account with given name from accounts
     public void removeAccount(String name) {
-        Account account = getAccount(name);
-        if (account.getBalance() == 0) {
-            accounts.remove(account.getIndex());
+        int listIndex = 0;
+        for (Account account: accounts) {
+            if (account.getName().equals(name)) {
+                accounts.remove(listIndex);
+                break;
+            }
+            listIndex++;
         }
     }
 
@@ -48,51 +56,45 @@ public class Master implements Serializable {
     // "Saving", "Lending", or "Borrowing", 'date' must be valid date with "YYYY-MM-DD" format, 'from' and 'to' must be
     // one of existing accounts
     // MODIFIES: this
-    // EFFECT: add the transaction to the allTransaction
-    public Transaction addTransaction(String type, String date, int value, Account from, Account to) {
-        int index = generateIndex();
-        Transaction entry = new Transaction(index, type, date, value, to, from);
-        allTransactions.add(entry);
-        updateBalance(type, value);
-        return entry;
-    }
-
-
-    private void updateBalance(String type, int value) {
-        if (type.equals("Earning")) {
-            totalBalance += value;
-        } else if (type.equals("Spending")) {
-            totalBalance -= value;
-        }
-    }
-
-
-
-    private int generateIndex() {
+    // EFFECT: create a new transaction from a generated unique index and given type, date, value, 'from' and 'to'
+    // accounts and add the transaction to allTransaction list and update totalBalance (return the created transaction)
+    public void addTransaction(Transaction entry) {
         int index = allTransactions.size();
-        while (!(allTransactions.get(index) == null)) {
+        if (index != 0) {
+            int highestIndex = allTransactions.get(index - 1).getIndex();
+            while (highestIndex >= index) {
                 index++;
             }
-        return index;
+        }
+        entry.setIndex(index);
+        allTransactions.add(entry);
+        updateBalance(entry.getType(), entry.getValue());
+        entry.getFrom().addEntry(entry, true);
+        entry.getTo().addEntry(entry, false);
     }
 
-    public Transaction removeTransaction(int index) {
-        Transaction transaction = null;
+
+    // REQUIRES: given index must be a valid index (existing)
+    // MODIFIES: this
+    // EFFECT: find the transaction with the given index, remove it from allTransactions, update the totalBalance, and
+    // return the found transaction
+    public void removeTransaction(int index) {
         int listIndex = 0;
         for (Transaction entry: allTransactions) {
             if (entry.getIndex() == index) {
                 allTransactions.remove(listIndex);
-                updateBalance(entry.getType(), entry.getValue());
-                transaction = entry;
+                updateBalance(entry.getType(), -entry.getValue());
+                entry.getFrom().removeEntry(index, false);
+                entry.getTo().removeEntry(index, true);
+                break;
             }
             listIndex++;
         }
-        return transaction;
     }
 
 
     // REQUIRES: account name must be a valid account name
-    // EFFECT: search accounts for the given name and returns it
+    // EFFECT: find the account with given name from accounts and returns it
     public Account getAccount(String name) {
         Account found = null;
         for (Account account : accounts) {
@@ -104,11 +106,38 @@ public class Master implements Serializable {
         return found;
     }
 
+
+    // EFFECT: return the total balance of all accounts
     public int getTotalBalance() {
         return totalBalance;
     }
 
+
+    // EFFECT: return the list of all existing accounts
+    public List<String> getAccountNames() {
+        List<String> accountNames = new ArrayList<>();
+        for (Account account : accounts) {
+            accountNames.add(account.getName());
+        }
+        return accountNames;
+    }
+
+
+    // EFFECT: return the list of all transactions
     public List<Transaction> getMasterAccount() {
         return allTransactions;
+    }
+
+
+    public List<Account> getAccountList() {
+        return accounts;
+    }
+
+    private void updateBalance(String type, int value) {
+        if (type.equals("Earning")) {
+            totalBalance += value;
+        } else if (type.equals("Spending")) {
+            totalBalance -= value;
+        }
     }
 }
