@@ -37,16 +37,17 @@ public class Account implements Serializable {
     // REQUIRE: Given index must be a valid entry index of the account.
     // MODIFIES: this
     // EFFECT: Removes an entry with a given index from the account's entry list and updates the account's balance.
-    public void removeEntry(int index, boolean subtract) {
+    public boolean removeEntry(int index, boolean subtract) {
         int listIndex = 0;
         for (Transaction entry: entries) {
             if (entry.getIndex() == index) {
                 entries.remove(listIndex);
                 setBalance(entry.getValue(), subtract);
-                break;
+                return true;
             }
             listIndex++;
         }
+        return false;
     }
 
     // REQUIRES: amount > 0

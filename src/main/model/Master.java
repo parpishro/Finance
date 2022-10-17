@@ -41,15 +41,16 @@ public class Master implements Serializable {
     // REQUIRES: given account name must be a (existing) account name, for the given account balance = 0
     // MODIFIES: this
     // EFFECT: removes the account with given name from accounts
-    public void removeAccount(String name) {
+    public boolean removeAccount(String name) {
         int listIndex = 0;
         for (Account account: accounts) {
             if (account.getName().equals(name)) {
                 accounts.remove(listIndex);
-                break;
+                return true;
             }
             listIndex++;
         }
+        return false;
     }
 
     // REQUIRE: 'type' must be one of the transaction category types: "Earning", "Spending", "Transfer", "Investing",
@@ -78,7 +79,7 @@ public class Master implements Serializable {
     // MODIFIES: this
     // EFFECT: find the transaction with the given index, remove it from allTransactions, update the totalBalance, and
     // return the found transaction
-    public void removeTransaction(int index) {
+    public boolean removeTransaction(int index) {
         int listIndex = 0;
         for (Transaction entry: allTransactions) {
             if (entry.getIndex() == index) {
@@ -86,10 +87,11 @@ public class Master implements Serializable {
                 updateBalance(entry.getType(), -entry.getValue());
                 entry.getFrom().removeEntry(index, false);
                 entry.getTo().removeEntry(index, true);
-                break;
+                return true;
             }
             listIndex++;
         }
+        return false;
     }
 
 

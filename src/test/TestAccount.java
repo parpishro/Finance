@@ -103,6 +103,12 @@ public class TestAccount {
     }
 
     @Test
+    void testRemoveEntryEmptyAccount() {
+        assertFalse(acc1.removeEntry(3, false));
+    }
+
+
+    @Test
     void testRemoveEntrySingleAdd() {
 
         acc2.addEntry(entry1, false);

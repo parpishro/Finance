@@ -61,6 +61,11 @@ public class TestMaster {
     }
 
     @Test
+    void testRemoveAccountEmptyMaster() {
+        assertFalse(master.removeAccount("Cash"));
+    }
+
+    @Test
     void testRemoveAccountSingle() {
 
         master.addAccount(acc1);
@@ -146,6 +151,11 @@ public class TestMaster {
         assertTrue(master.getAccount("Income").getEntries().contains(entry1));
         assertTrue(master.getAccount("Expenditure").getEntries().contains(entry4));
         assertEquals(23500, master.getTotalBalance());
+    }
+
+    @Test
+    void testRemoveTransactionEmptyMaster() {
+        assertFalse(master.removeTransaction(2));
     }
 
     @Test
@@ -238,6 +248,13 @@ public class TestMaster {
         assertTrue(master.getAccountNames().contains("Cash"));
         assertTrue(master.getAccountNames().contains("Income"));
         assertTrue(master.getAccountNames().contains("Bank"));
+    }
+
+
+    @Test
+    void testGetAccountEmpty() {
+        assertNull(master.getAccount("Cash"));
+
     }
 
 
