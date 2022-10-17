@@ -1,5 +1,3 @@
-package test;
-
 import model.Account;
 import model.Transaction;
 import org.junit.jupiter.api.BeforeEach;

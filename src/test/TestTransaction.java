@@ -1,5 +1,3 @@
-package test;
-
 import model.Account;
 import model.Transaction;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,12 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestTransaction {
 
-    private int index;
-    private String type;
-    private String date;
-    private int value;
-    private Account from;
-    private Account to;
+
 
     private Account acc1;
     private Account acc2;
@@ -28,12 +21,12 @@ public class TestTransaction {
         acc1 = new Account(0, "Cash", true, 1000);
         acc2 = new Account(1, "Bank", true, 20000);
 
-        index = 1;
-        type = "Transfer";
-        date = "2022-10-10";
-        value = 2500;
-        from = acc1;
-        to = acc2;
+        int index = 1;
+        String type = "Transfer";
+        String date = "2022-10-10";
+        int value = 2500;
+        Account from = acc1;
+        Account to = acc2;
 
 
         entry = new Transaction(index, type, date, value, from, to);

@@ -1,5 +1,3 @@
-package test;
-
 import model.Account;
 import model.Master;
 import model.Transaction;
