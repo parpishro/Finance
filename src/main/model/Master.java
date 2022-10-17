@@ -9,30 +9,28 @@ public class Master implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final List<Account> accounts;
-    private final List<Transaction> allTransactions;
+    private List<Account> accounts;
+    private List<Transaction> allTransactions;
     private int totalBalance;
 
 
     // EFFECT: constructs a master object adding a default account of cash with zero total balance and no transactions
     public Master() {
         accounts = new ArrayList<>();
-        Account cash = new Account(0, "Cash", true);
-        accounts.add(cash);
         allTransactions = new ArrayList<>();
         totalBalance = 0;
     }
 
     // MODIFIES: this
     // EFFECT: adds an account to accounts with given name and isPos and creates a unique index for it
-    public void addAccount(String name, boolean isPos) {
+    public void addAccount(String name, boolean isPos, int balance) {
         int index = accounts.size();
         try {
             while (accounts.contains(accounts.get(index))) {
                 index++;
             }
         } catch (Exception e) {
-            accounts.add(new Account(index, name, isPos));
+            accounts.add(new Account(index, name, isPos, balance));
         }
     }
 
@@ -46,38 +44,50 @@ public class Master implements Serializable {
         }
     }
 
+    // REQUIRE: 'type' must be one of the transaction category types: "Earning", "Spending", "Transfer", "Investing",
+    // "Saving", "Lending", or "Borrowing", 'date' must be valid date with "YYYY-MM-DD" format, 'from' and 'to' must be
+    // one of existing accounts
     // MODIFIES: this
     // EFFECT: add the transaction to the allTransaction
     public Transaction addTransaction(String type, String date, int value, Account from, Account to) {
-        Transaction entry = null;
-        int index = allTransactions.size();
-        try {
-            while (allTransactions.contains(allTransactions.get(index))) {
-                index++;
-            }
-        } catch (Exception e) {
-            entry = new Transaction(index, type, date, value, to, from);
-            allTransactions.add(entry);
-            if (type.equals("Earning")) {
-                totalBalance += value;
-            } else if (type.equals("Spending")) {
-                totalBalance -= value;
-            }
-        }
+        int index = generateIndex();
+        Transaction entry = new Transaction(index, type, date, value, to, from);
+        allTransactions.add(entry);
+        updateBalance(type, value);
         return entry;
     }
 
-    public void removeTransaction(int index) {
-        int counter = 0;
-        for (Transaction transaction: allTransactions) {
-            if (transaction.getIndex() == index) {
-                allTransactions.remove(counter);
-                totalBalance -= transaction.getValue();
-                transaction.getFrom().removeEntry(index);
-                transaction.getTo().removeEntry(index);
-            }
-            counter++;
+
+    private void updateBalance(String type, int value) {
+        if (type.equals("Earning")) {
+            totalBalance += value;
+        } else if (type.equals("Spending")) {
+            totalBalance -= value;
         }
+    }
+
+
+
+    private int generateIndex() {
+        int index = allTransactions.size();
+        while (!(allTransactions.get(index) == null)) {
+                index++;
+            }
+        return index;
+    }
+
+    public Transaction removeTransaction(int index) {
+        Transaction transaction = null;
+        int listIndex = 0;
+        for (Transaction entry: allTransactions) {
+            if (entry.getIndex() == index) {
+                allTransactions.remove(listIndex);
+                updateBalance(entry.getType(), entry.getValue());
+                transaction = entry;
+            }
+            listIndex++;
+        }
+        return transaction;
     }
 
 

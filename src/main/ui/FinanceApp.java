@@ -157,7 +157,10 @@ public class FinanceApp {
     private void removeTransaction() {
         Scanner input = new Scanner(System.in);
         System.out.println("Enter the index of the transaction to be deleted: ");
-        master.removeTransaction((int) input.nextDouble());
+        int index = (int) input.nextDouble();
+        Transaction entry = master.removeTransaction(index);
+        entry.getFrom().removeEntry(index, false);
+        entry.getTo().removeEntry(index, true);
     }
 
     private void enterTransaction() {
@@ -168,7 +171,9 @@ public class FinanceApp {
         int value = (int) input.nextDouble() * 100;
         Account from = master.getAccount(input.next());
         Account to = master.getAccount(input.next());
-        from.addEntry(master, type, date, value, from, to);
+        Transaction entry = master.addTransaction(type, date, value, from, to);
+        from.addEntry(entry, true);
+        to.addEntry(entry, false);
     }
 
     private void removeAccount() {
@@ -182,6 +187,7 @@ public class FinanceApp {
         System.out.println("Enter the name and isPos of account to be created: ");
         String accountName = input.next();
         boolean isPos = input.nextBoolean();
-        master.addAccount(accountName, isPos);
+        int balance = (int) input.nextDouble() * 100;
+        master.addAccount(accountName, isPos, balance);
     }
 }

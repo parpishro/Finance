@@ -8,73 +8,112 @@ import java.util.List;
 // any compartment of asset allocations that can hold value (in $) such as cash, bank accounts, investment account, ...
 public class Account implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final String name;
-    private final int index;
+
+    private int index;
+    private String name;
+    private boolean isPos;
     private int balance;
-    private final boolean isPos;
     private final ArrayList<Transaction> entries;
 
-    // REQUIRES: index and name must unique
-    // EFFECT: Constructs an account with given index (unique), name, and isPos (whether it holds positive or negative
-    // values) Any account (like cash) that has user's holdings (such as money or investment) must have positive value
-    // (isPos = true) and any account that represents users borrowings (like credit cards or loans) must have negative
-    // value (isPos = false)
-    public Account(int index, String name, boolean isPos) {
+    // REQUIRES: index and name must be unique, when isPos = true, balance >= 0, and when isPos = false, balance <= 0
+    // EFFECT: constructs an account with given index, name, and isPos (true represents accounts with user's holdings
+    // and false represents accounts with user's borrowings
+    public Account(int index, String name, boolean isPos, int balance) {
         this.index = index;
         this.name = name;
         this.isPos = isPos;
-        balance = 0;
+        this.balance = balance;
         entries = new ArrayList<>();
     }
 
-    // REQUIRE: Type must be one of the Category type: "Earning", "Spending", "Investing", "Saving", "Lending",
-    //          or "Borrowing"/ date must be valid date with YYYY-MM-DD format/ from must be one of existing accounts.
+    // REQUIRE: entry must be a valid transaction
     // MODIFIES: this
-    // EFFECT: Creates an entry from given arguments and adds it to account's entry list and updates account balance.
-    public void addEntry(Master master, String type, String date, int value, Account from, Account to) {
-        Transaction entry = master.addTransaction(type, date, value, from, to);
-        if (entry != null) {
-            entries.add(entry);
-            balance -= value;
-            to.entries.add(entry);
-            to.setBalance(value);
-        }
-    }
-
-    private void setBalance(int amount) {
-        balance += amount;
+    // EFFECT: add a given entry to account entries and updates account balance.
+    public void addEntry(Transaction entry, boolean subtract) {
+        entries.add(entry);
+        setBalance(entry.getValue(), subtract);
     }
 
     // REQUIRE: Given index must be a valid entry index of the account.
     // MODIFIES: this
     // EFFECT: Removes an entry with a given index from the account's entry list and updates the account's balance.
-    public void removeEntry(int index) {
-        int counter = 0;
+    public void removeEntry(int index, boolean subtract) {
+        int listIndex = 0;
         for (Transaction entry: entries) {
             if (entry.getIndex() == index) {
-                entries.remove(counter);
-                balance -= entry.getValue();
+                entries.remove(listIndex);
+                setBalance(entry.getValue(), subtract);
+                break;
             }
-            counter++;
+            listIndex++;
         }
     }
 
-    public int getBalance() {
-        return balance;
+    // REQUIRES: amount > 0
+    // MODIFIES: this
+    // EFFECT: updates the account balance after adding or removing entries
+    private void setBalance(int amount, boolean subtract) {
+        if (subtract) {
+            balance -= amount;
+        } else {
+            balance += amount;
+        }
     }
 
-    public String getName() {
-        return name;
+
+    // MODIFIES: this
+    // EFFECT: set balance manually
+    public void setBalance(int amount) {
+        balance = amount;
     }
 
-    public boolean getIsPos() {
-        return isPos;
+    // REQUIRES: unique index (non-repeating)
+    // MODIFIES: this
+    // EFFECT: edits the index of an account
+    public void setIndex(int index) {
+        this.index = index;
     }
 
+    // REQUIRES: unique name (non-repeating)
+    // MODIFIES: this
+    // EFFECT: edits the name of an account
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    // MODIFIES: this
+    // EFFECT: edits the isPos status of an account
+    public void setIsPos(boolean isPos) {
+        this.isPos = isPos;
+    }
+
+
+    // EFFECT: get the index of an account
     public int getIndex() {
         return index;
     }
 
+
+    // EFFECT: get the name of an account
+    public String getName() {
+        return name;
+    }
+
+
+    // EFFECT: get the isPos status of an account
+    public boolean getIsPos() {
+        return isPos;
+    }
+
+
+    // EFFECT: get the current balance of an account
+    public int getBalance() {
+        return balance;
+    }
+
+
+    // EFFECT: get the entry list of an account
     public List<Transaction> getEntries() {
         return entries;
     }
