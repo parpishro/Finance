@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public class JsonReader {
     private Master master;
-    private String path;
+    private final String path;
 
     public JsonReader(String path) throws IOException {
         this.path = path;
@@ -25,7 +25,7 @@ public class JsonReader {
     public Master load() throws IOException {
         StringBuilder fileContent = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(path), StandardCharsets.UTF_8)) {
-            stream.forEach(s -> fileContent.append(s));
+            stream.forEach(fileContent::append);
         }
         JSONObject jsonMaster = new JSONObject(fileContent.toString());
         master = new Master(jsonMaster.getString("user"));
