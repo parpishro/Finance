@@ -29,11 +29,11 @@ public class TestAccount {
         acc4 = new Account(4, "Income", false, 0);
         acc5 = new Account(5, "Credit", false, -15000);
 
-        entry1 = new Transaction(1, "Earning", "2022-10-10", 10000, acc4, acc2);
-        entry2 = new Transaction(2, "Transfer", "2022-10-11", 5000, acc2, acc1);
-        entry3 = new Transaction(3, "Spending", "2022-10-12", 3000, acc2, acc3);
-        entry4 = new Transaction(4, "Spending", "2022-10-13", 15000, acc5, acc3);
-        entry5 = new Transaction(5, "Transfer", "2022-10-14", 10000, acc2, acc5);
+        entry1 = new Transaction(1, "Earning", "2022-10-10", 10000, "Income", "Bank");
+        entry2 = new Transaction(2, "Transfer", "2022-10-11", 5000, "Bank", "Cash");
+        entry3 = new Transaction(3, "Spending", "2022-10-12", 3000, "Bank", "Expenditure");
+        entry4 = new Transaction(4, "Spending", "2022-10-13", 15000, "Credit", "Expenditure");
+        entry5 = new Transaction(5, "Transfer", "2022-10-14", 10000, "Bank", "Credit");
     }
 
 

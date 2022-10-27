@@ -1,6 +1,9 @@
 package model;
 
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +16,7 @@ public class Account implements Serializable {
     private String name;
     private boolean isPos;
     private int balance;
-    private final ArrayList<Transaction> entries;
+    private final List<Transaction> entries;
 
     // REQUIRES: index and name must be unique, when isPos = true, balance >= 0, and when isPos = false, balance <= 0
     // EFFECT: constructs an account with given index, name, and isPos (true represents accounts with user's holdings
@@ -24,6 +27,18 @@ public class Account implements Serializable {
         this.isPos = isPos;
         this.balance = balance;
         entries = new ArrayList<>();
+    }
+
+
+    // REQUIRES: index and name must be unique, when isPos = true, balance >= 0, and when isPos = false, balance <= 0
+    // EFFECT: constructs an account with given index, name, and isPos (true represents accounts with user's holdings
+    // and false represents accounts with user's borrowings
+    public Account(int index, String name, boolean isPos, int balance, List<Transaction> entries) {
+        this.index = index;
+        this.name = name;
+        this.isPos = isPos;
+        this.balance = balance;
+        this.entries = entries;
     }
 
     // REQUIRE: entry must be a valid transaction
@@ -119,4 +134,23 @@ public class Account implements Serializable {
         return entries;
     }
 
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("index", index);
+        json.put("name", name);
+        json.put("isPos", isPos);
+        json.put("balance", balance);
+        json.put("entries", entriesToJson());
+        return json;
+    }
+
+    private JSONArray entriesToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Transaction entry : entries) {
+            jsonArray.put(entry.toJson());
+        }
+
+        return jsonArray;
+    }
 }

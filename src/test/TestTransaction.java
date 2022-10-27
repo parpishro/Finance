@@ -25,8 +25,8 @@ public class TestTransaction {
         String type = "Transfer";
         String date = "2022-10-10";
         int value = 2500;
-        Account from = acc1;
-        Account to = acc2;
+        String from = "Cash";
+        String to = "Bank";
 
 
         entry = new Transaction(index, type, date, value, from, to);
@@ -60,15 +60,15 @@ public class TestTransaction {
     @Test
     void testSetFrom() {
         Account acc = new Account(2, "Credit", false, -10000);
-        entry.setFrom(acc);
-        assertEquals(acc, entry.getFrom());
+        entry.setFrom("Credit");
+        assertEquals("Credit", entry.getFrom());
     }
 
     @Test
     void testSetTo() {
         Account acc = new Account(2, "Credit", false, -10000);
-        entry.setTo(acc);
-        assertEquals(acc, entry.getTo());
+        entry.setTo("Credit");
+        assertEquals("Credit", entry.getTo());
     }
 
     @Test
@@ -93,12 +93,12 @@ public class TestTransaction {
 
     @Test
     void testGetFrom() {
-        assertEquals(acc1, entry.getFrom());
+        assertEquals("Cash", entry.getFrom());
     }
 
     @Test
     void testGetTo() {
-        assertEquals(acc2, entry.getTo());
+        assertEquals("Bank", entry.getTo());
     }
 
 

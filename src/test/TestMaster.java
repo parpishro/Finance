@@ -24,17 +24,17 @@ public class TestMaster {
     @BeforeEach
     void runBefore() {
 
-        master = new Master();
+        master = new Master("Par");
 
         acc1 = new Account(1, "Cash", true, 1000);
         acc2 = new Account(2, "Bank", true, 20000);
         acc4 = new Account(4, "Income", false, 0);
         acc7 = new Account(7, "Expenditure", true, 0);
 
-        entry1 = new Transaction(1, "Earning", "2022-10-10", 10000, acc4, acc2);
-        entry2 = new Transaction(2, "Transfer", "2022-10-11", 5000, acc2, acc1);
-        entry3 = new Transaction(3, "Transfer", "2022-10-18", 15000, acc1, acc2);
-        entry4 = new Transaction(4, "Spending", "2022-10-22", 7500, acc1, acc7);
+        entry1 = new Transaction(0, "Earning", "2022-10-10", 10000, "Income", "Bank");
+        entry2 = new Transaction(1, "Transfer", "2022-10-11", 5000, "Bank", "Cash");
+        entry3 = new Transaction(2, "Transfer", "2022-10-18", 15000, "Cash", "Bank");
+        entry4 = new Transaction(3, "Spending", "2022-10-22", 7500, "Cash", "Expenditure");
 
 
     }
@@ -166,19 +166,19 @@ public class TestMaster {
         master.addAccount(acc4);
         master.addTransaction(entry1);
         master.addTransaction(entry2);
-        master.removeTransaction(0);
+        master.removeTransaction(1);
 
         assertEquals(1, master.getMasterAccount().size());
-        assertEquals(1, master.getAccount("Cash").getEntries().size());
+        assertEquals(0, master.getAccount("Cash").getEntries().size());
         assertEquals(1, master.getAccount("Bank").getEntries().size());
-        assertEquals(0, master.getAccount("Income").getEntries().size());
-        assertFalse(master.getMasterAccount().contains(entry1));
-        assertTrue(master.getMasterAccount().contains(entry2));
-        assertTrue(master.getAccount("Cash").getEntries().contains(entry2));
-        assertTrue(master.getAccount("Bank").getEntries().contains(entry2));
-        assertFalse(master.getAccount("Bank").getEntries().contains(entry1));
-        assertFalse(master.getAccount("Income").getEntries().contains(entry1));
-        assertEquals(21000, master.getTotalBalance());
+        assertEquals(1, master.getAccount("Income").getEntries().size());
+        assertTrue(master.getMasterAccount().contains(entry1));
+        assertFalse(master.getMasterAccount().contains(entry2));
+        assertFalse(master.getAccount("Cash").getEntries().contains(entry2));
+        assertFalse(master.getAccount("Bank").getEntries().contains(entry2));
+        assertTrue(master.getAccount("Bank").getEntries().contains(entry1));
+        assertTrue(master.getAccount("Income").getEntries().contains(entry1));
+        assertEquals(31000, master.getTotalBalance());
 
     }
 

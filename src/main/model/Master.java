@@ -1,21 +1,22 @@
 package model;
 
-import java.io.Serializable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 // master object containing all the accounts and their associated transactions
-public class Master implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class Master {
+    private final String user;
     private final List<Account> accounts;
     private final List<Transaction> allTransactions;
     private int totalBalance;
 
 
     // EFFECT: constructs a master object consisting of empty accounts list and allTransaction list with 0 totalBalance
-    public Master() {
+    public Master(String user) {
+        this.user = user;
         accounts = new ArrayList<>();
         allTransactions = new ArrayList<>();
         totalBalance = 0;
@@ -70,8 +71,14 @@ public class Master implements Serializable {
         entry.setIndex(index);
         allTransactions.add(entry);
         updateBalance(entry.getType(), entry.getValue());
-        entry.getFrom().addEntry(entry, true);
-        entry.getTo().addEntry(entry, false);
+        this.getAccount(entry.getFrom()).addEntry(entry, true);
+        this.getAccount(entry.getTo()).addEntry(entry, false);
+    }
+
+
+    public void addTransaction(int index, String type, String date, int value, String from, String to) {
+        Transaction transaction = new Transaction(index, type, date, value, from, to);
+        allTransactions.add(transaction);
     }
 
 
@@ -85,8 +92,8 @@ public class Master implements Serializable {
             if (entry.getIndex() == index) {
                 allTransactions.remove(listIndex);
                 updateBalance(entry.getType(), -entry.getValue());
-                entry.getFrom().removeEntry(index, false);
-                entry.getTo().removeEntry(index, true);
+                this.getAccount(entry.getFrom()).removeEntry(index, false);
+                this.getAccount(entry.getTo()).removeEntry(index, true);
                 return true;
             }
             listIndex++;
@@ -114,6 +121,10 @@ public class Master implements Serializable {
         return totalBalance;
     }
 
+    public List<Transaction> getAllTransactions() {
+        return allTransactions;
+    }
+
 
     // EFFECT: return the list of all existing accounts
     public List<String> getAccountNames() {
@@ -122,6 +133,11 @@ public class Master implements Serializable {
             accountNames.add(account.getName());
         }
         return accountNames;
+    }
+
+
+    public String getUser() {
+        return user;
     }
 
 
@@ -141,5 +157,37 @@ public class Master implements Serializable {
         } else if (type.equals("Spending")) {
             totalBalance -= value;
         }
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("user", user);
+        json.put("accounts", accountsToJson());
+        json.put("allTransactions", allTransactionsToJson());
+        json.put("totalBalance", totalBalance);
+        return json;
+    }
+
+    // EFFECTS: returns things in this workroom as a JSON array
+    private JSONArray accountsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Account account : accounts) {
+            jsonArray.put(account.toJson());
+        }
+        return jsonArray;
+    }
+
+    private JSONArray allTransactionsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Transaction entry : allTransactions) {
+            jsonArray.put(entry.toJson());
+        }
+        return jsonArray;
+    }
+
+    public void setTotalBalance(int totalBalance) {
+        this.totalBalance = totalBalance;
     }
 }

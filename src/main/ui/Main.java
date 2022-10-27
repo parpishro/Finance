@@ -1,13 +1,10 @@
 package ui;
 
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.ParseException;
 
+// starts the application
 public class Main {
-    public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException {
         new FinanceApp();
     }
 }
-

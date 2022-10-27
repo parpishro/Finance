@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public class Transaction implements Serializable {
@@ -8,14 +10,14 @@ public class Transaction implements Serializable {
     private String type;
     private String date;
     private int value;
-    private Account from;
-    private Account to;
+    private String from;
+    private String to;
 
     // REQUIRES: index >= 0 and is unique (not one of existing transaction indices), type is one of: "Earning",
     // "Spending", "Investing", "Saving", "Lending", "Borrowing", date is in YYYY-MM-DD format, value > 0, "from" is one
     // of existing accounts, "to" is one of existing accounts
     // EFFECT: constructs a transaction entry with given index, type, date, value, from (account), and to (account)
-    public Transaction(int index, String type, String date, int value, Account from, Account to) {
+    public Transaction(int index, String type, String date, int value, String from, String to) {
         this.index = index;
         this.type = type;
         this.date = date;
@@ -42,11 +44,11 @@ public class Transaction implements Serializable {
         this.value = value;
     }
 
-    public void setFrom(Account from) {
+    public void setFrom(String from) {
         this.from = from;
     }
 
-    public void setTo(Account to) {
+    public void setTo(String to) {
         this.to = to;
     }
 
@@ -69,12 +71,22 @@ public class Transaction implements Serializable {
         return value;
     }
 
-    public Account getFrom() {
+    public String getFrom() {
         return from;
     }
 
-    public Account getTo() {
+    public String getTo() {
         return to;
     }
 
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("index", index);
+        json.put("type", type);
+        json.put("date", date);
+        json.put("value", value);
+        json.put("from", from);
+        json.put("to", to);
+        return json;
+    }
 }
