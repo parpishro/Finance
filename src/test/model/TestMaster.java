@@ -1,8 +1,6 @@
 package model;
 
-import model.Account;
-import model.Master;
-import model.Transaction;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -241,12 +239,15 @@ public class TestMaster {
     }
 
     @Test
-    void testGetAccountsNames() {
+    void testGetAccountsAndNames() {
         master.addAccount(acc1);
         master.addAccount(acc2);
         master.addAccount(acc4);
 
         assertEquals(3, master.getAccountNames().size());
+        assertTrue(master.getAccounts().contains(acc1));
+        assertTrue(master.getAccounts().contains(acc2));
+        assertTrue(master.getAccounts().contains(acc4));
         assertTrue(master.getAccountNames().contains("Cash"));
         assertTrue(master.getAccountNames().contains("Income"));
         assertTrue(master.getAccountNames().contains("Bank"));
