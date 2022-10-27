@@ -190,4 +190,17 @@ public class Master {
     public void setTotalBalance(int totalBalance) {
         this.totalBalance = totalBalance;
     }
+
+    public int numberOfAccounts() {
+        return accounts.size();
+
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public int numberOfTransactions() {
+        return allTransactions.size();
+    }
 }

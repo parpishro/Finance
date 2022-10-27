@@ -1,1 +1,60 @@
-{"totalBalance":3000,"allTransactions":[{"date":"2022-10-10","index":0,"from":"Cash","to":"Expenditure","type":"Spending","value":2300},{"date":"2022-11-11","index":1,"from":"Cash","to":"Expenditure","type":"Spending","value":4400},{"date":"2022-12-12","index":2,"from":"Cash","to":"Expenditure","type":"Spending","value":1400}],"accounts":[{"entries":[{"date":"2022-12-12","index":2,"from":"Cash","to":"Expenditure","type":"Spending","value":1400}],"balance":9700,"isPos":true,"name":"Cash","index":0},{"entries":[{"date":"2022-12-12","index":2,"from":"Cash","to":"Expenditure","type":"Spending","value":1400}],"balance":1400,"isPos":false,"name":"Expenditure","index":1}],"user":"Par"}
+{
+  "totalBalance": 3000,
+  "allTransactions": [
+    {
+      "date": "2022-10-10",
+      "index": 0,
+      "from": "Cash",
+      "to": "Expenditure",
+      "type": "Spending",
+      "value": 2300
+    },
+    {
+      "date": "2022-11-11",
+      "index": 1,
+      "from": "Cash",
+      "to": "Expenditure",
+      "type": "Spending",
+      "value": 4400
+    },
+    {
+      "date": "2022-12-12",
+      "index": 2,
+      "from": "Cash",
+      "to": "Expenditure",
+      "type": "Spending",
+      "value": 1400
+    }
+  ],
+  "accounts": [
+    {
+      "entries": [{
+        "date": "2022-12-12",
+        "index": 2,
+        "from": "Cash",
+        "to": "Expenditure",
+        "type": "Spending",
+        "value": 1400
+      }],
+      "balance": 9700,
+      "isPos": true,
+      "name": "Cash",
+      "index": 0
+    },
+    {
+      "entries": [{
+        "date": "2022-12-12",
+        "index": 2,
+        "from": "Cash",
+        "to": "Expenditure",
+        "type": "Spending",
+        "value": 1400
+      }],
+      "balance": 1400,
+      "isPos": false,
+      "name": "Expenditure",
+      "index": 1
+    }
+  ],
+  "user": "Par"
+}

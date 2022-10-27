@@ -19,7 +19,7 @@ public class JsonWriter {
     // EFFECTS: writes JSON representation of workroom to file
     public void save(Master master) {
         JSONObject json = master.toJson();
-        writer.print(json.toString());
+        writer.print(json.toString(2));
         writer.close();
     }
 

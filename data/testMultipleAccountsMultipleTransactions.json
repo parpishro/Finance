@@ -1,0 +1,72 @@
+{
+  "totalBalance": 910,
+  "allTransactions": [
+    {
+      "date": "2022-10-10",
+      "index": 0,
+      "from": "Cash",
+      "to": "Out",
+      "type": "Spending",
+      "value": 50
+    },
+    {
+      "date": "2022-10-11",
+      "index": 1,
+      "from": "Cash",
+      "to": "Out",
+      "type": "Spending",
+      "value": 40
+    }
+  ],
+  "accounts": [
+    {
+      "entries": [
+        {
+          "date": "2022-10-10",
+          "index": 0,
+          "from": "Cash",
+          "to": "Out",
+          "type": "Spending",
+          "value": 50
+        },
+        {
+          "date": "2022-10-11",
+          "index": 1,
+          "from": "Cash",
+          "to": "Out",
+          "type": "Spending",
+          "value": 40
+        }
+      ],
+      "balance": 910,
+      "isPos": true,
+      "name": "Cash",
+      "index": 0
+    },
+    {
+      "entries": [
+        {
+          "date": "2022-10-10",
+          "index": 0,
+          "from": "Cash",
+          "to": "Out",
+          "type": "Spending",
+          "value": 50
+        },
+        {
+          "date": "2022-10-11",
+          "index": 1,
+          "from": "Cash",
+          "to": "Out",
+          "type": "Spending",
+          "value": 40
+        }
+      ],
+      "balance": 90,
+      "isPos": false,
+      "name": "Out",
+      "index": 1
+    }
+  ],
+  "user": "user"
+}

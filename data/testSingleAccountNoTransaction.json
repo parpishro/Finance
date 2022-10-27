@@ -1,0 +1,12 @@
+{
+  "totalBalance": 1000,
+  "allTransactions": [],
+  "accounts": [{
+    "entries": [],
+    "balance": 1000,
+    "isPos": true,
+    "name": "Cash",
+    "index": 0
+  }],
+  "user": "user"
+}
