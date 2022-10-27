@@ -2,12 +2,13 @@ package model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import persistence.Savable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 // master object containing all the accounts and their associated transactions
-public class Master {
+public class Master implements Savable {
     private final String user;
     private final List<Account> accounts;
     private final List<Transaction> allTransactions;

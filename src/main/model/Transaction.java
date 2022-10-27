@@ -1,10 +1,11 @@
 package model;
 
 import org.json.JSONObject;
+import persistence.Savable;
 
 import java.io.Serializable;
 
-public class Transaction implements Serializable {
+public class Transaction implements Savable {
     private static final long serialVersionUID = 1L;
     private int index;
     private String type;

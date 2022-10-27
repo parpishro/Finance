@@ -1,3 +1,5 @@
+package model;
+
 import model.Account;
 import model.Transaction;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,17 +11,12 @@ public class TestTransaction {
 
 
 
-    private Account acc1;
-    private Account acc2;
-
-
     private Transaction entry;
-
 
     @BeforeEach
     void runBefore() {
-        acc1 = new Account(0, "Cash", true, 1000);
-        acc2 = new Account(1, "Bank", true, 20000);
+        Account acc1 = new Account(0, "Cash", true, 1000);
+        Account acc2 = new Account(1, "Bank", true, 20000);
 
         int index = 1;
         String type = "Transfer";

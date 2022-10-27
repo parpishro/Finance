@@ -3,13 +3,14 @@ package model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import persistence.Savable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 // any compartment of asset allocations that can hold value (in $) such as cash, bank accounts, investment account, ...
-public class Account implements Serializable {
+public class Account implements Savable {
     private static final long serialVersionUID = 1L;
 
     private int index;

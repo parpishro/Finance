@@ -1,3 +1,5 @@
+package model;
+
 import model.Account;
 import model.Master;
 import model.Transaction;
