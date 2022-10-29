@@ -1,6 +1,5 @@
 package model;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestAccount {
-
     private Account acc1;
     private Account acc2;
     private Account acc3;
@@ -20,7 +18,6 @@ public class TestAccount {
     private Transaction entry3;
     private Transaction entry4;
     private Transaction entry5;
-
 
     @BeforeEach
     void runBefore() {
@@ -41,7 +38,6 @@ public class TestAccount {
 
     @Test
     void testAddEntrySingleSubtract() {
-
         acc4.addEntry(entry1, true);
 
         assertEquals(1, acc4.getEntries().size());
@@ -51,7 +47,6 @@ public class TestAccount {
 
     @Test
     void testAddEntrySingleAdd() {
-
         acc2.addEntry(entry1, false);
 
         assertEquals(1, acc2.getEntries().size());
@@ -61,7 +56,6 @@ public class TestAccount {
 
     @Test
     void testAddEntryMultipleSubtract() {
-
         acc2.addEntry(entry2, true);
         acc2.addEntry(entry3, true);
 
@@ -73,7 +67,6 @@ public class TestAccount {
 
     @Test
     void testAddEntryMultipleAdd() {
-
         acc3.addEntry(entry3, false);
         acc3.addEntry(entry4, false);
 
@@ -85,7 +78,6 @@ public class TestAccount {
 
     @Test
     void testAddEntryAddSubtract() {
-
         acc2.addEntry(entry1, false);
         acc2.addEntry(entry2, true);
 
@@ -95,7 +87,6 @@ public class TestAccount {
 
     @Test
     void testAddEntrySubtractAdd() {
-
         acc5.addEntry(entry4, true);
         acc5.addEntry(entry5, false);
 
@@ -104,14 +95,7 @@ public class TestAccount {
     }
 
     @Test
-    void testRemoveEntryEmptyAccount() {
-        assertFalse(acc1.removeEntry(3, false));
-    }
-
-
-    @Test
     void testRemoveEntrySingleAdd() {
-
         acc2.addEntry(entry1, false);
         acc2.removeEntry(1, true);
 
@@ -121,7 +105,6 @@ public class TestAccount {
 
     @Test
     void testRemoveEntrySingleSubtract() {
-
         acc4.addEntry(entry1, true);
         acc4.removeEntry(1, false);
 
@@ -131,7 +114,6 @@ public class TestAccount {
 
     @Test
     void testRemoveEntryMultipleAdd() {
-
         acc3.addEntry(entry3, false);
         acc3.addEntry(entry4, false);
         acc3.removeEntry(3, true);
@@ -143,7 +125,6 @@ public class TestAccount {
 
     @Test
     void testRemoveEntryMultipleSubtract() {
-
         acc2.addEntry(entry2, true);
         acc2.addEntry(entry3, true);
         acc2.removeEntry(2, false);
@@ -155,7 +136,6 @@ public class TestAccount {
 
     @Test
     void testRemoveEntryAddSubtract() {
-
         acc2.addEntry(entry1, false);
         acc2.addEntry(entry2, true);
         acc2.removeEntry(1, true);
@@ -167,7 +147,6 @@ public class TestAccount {
 
     @Test
     void testRemoveEntrySubtractAdd() {
-
         acc5.addEntry(entry4, true);
         acc5.addEntry(entry5, false);
         acc5.removeEntry(5, true);
@@ -180,7 +159,6 @@ public class TestAccount {
 
     @Test
     void testSetBalanceManual() {
-
         acc1.setBalance(5000);
 
         assertEquals(5000, acc1.getBalance());
@@ -188,7 +166,6 @@ public class TestAccount {
 
     @Test
     void testSetIndex() {
-
         acc1.setIndex(10);
 
         assertEquals(10, acc1.getIndex());
@@ -196,7 +173,6 @@ public class TestAccount {
 
     @Test
     void testSetName() {
-
         acc2.setName("ScotiaBank");
 
         assertEquals("ScotiaBank", acc2.getName());
@@ -204,7 +180,6 @@ public class TestAccount {
 
     @Test
     void testSetIsPosFalse() {
-
         acc2.setIsPos(false);
 
         assertFalse(acc2.getIsPos());
@@ -212,7 +187,6 @@ public class TestAccount {
 
     @Test
     void testSetIsPosTrue() {
-
         acc4.setIsPos(true);
 
         assertTrue(acc4.getIsPos());
@@ -220,7 +194,6 @@ public class TestAccount {
 
     @Test
     void testGetEntries() {
-
         acc2.addEntry(entry1, false);
         acc2.addEntry(entry2, true);
         acc2.addEntry(entry3, true);
@@ -232,8 +205,5 @@ public class TestAccount {
         assertTrue(acc2.getEntries().contains(entry3));
         assertTrue(acc2.getEntries().contains(entry5));
     }
-
-
-
 }
 

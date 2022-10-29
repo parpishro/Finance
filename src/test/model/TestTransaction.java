@@ -13,8 +13,6 @@ public class TestTransaction {
 
     @BeforeEach
     void runBefore() {
-        Account acc1 = new Account(0, "Cash", true, 1000);
-        Account acc2 = new Account(1, "Bank", true, 20000);
 
         int index = 1;
         String type = "Transfer";
@@ -54,14 +52,12 @@ public class TestTransaction {
 
     @Test
     void testSetFrom() {
-        Account acc = new Account(2, "Credit", false, -10000);
         entry.setFrom("Credit");
         assertEquals("Credit", entry.getFrom());
     }
 
     @Test
     void testSetTo() {
-        Account acc = new Account(2, "Credit", false, -10000);
         entry.setTo("Credit");
         assertEquals("Credit", entry.getTo());
     }

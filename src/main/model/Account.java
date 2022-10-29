@@ -1,18 +1,15 @@
 package model;
 
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Savable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-// any compartment of asset allocations that can hold value (in $) such as cash, bank accounts, investment account, ...
+// Represents any compartment of monetary allocations holding values (in $) such as cash, bank accounts, investment, ...
+// (positive) or credit, loan, ... (negative)
 public class Account implements Savable {
-    private static final long serialVersionUID = 1L;
-
     private int index;
     private String name;
     private boolean isPos;
@@ -21,7 +18,7 @@ public class Account implements Savable {
 
     // REQUIRES: index and name must be unique, when isPos = true, balance >= 0, and when isPos = false, balance <= 0
     // EFFECT: constructs an account with given index, name, and isPos (true represents accounts with user's holdings
-    // and false represents accounts with user's borrowings
+    //         and false represents accounts with user's borrowings) with empty list of entries (used to add account).
     public Account(int index, String name, boolean isPos, int balance) {
         this.index = index;
         this.name = name;
@@ -30,10 +27,9 @@ public class Account implements Savable {
         entries = new ArrayList<>();
     }
 
-
     // REQUIRES: index and name must be unique, when isPos = true, balance >= 0, and when isPos = false, balance <= 0
     // EFFECT: constructs an account with given index, name, and isPos (true represents accounts with user's holdings
-    // and false represents accounts with user's borrowings
+    //         and false represents accounts with user's borrowings) with a list of entries (used to load master).
     public Account(int index, String name, boolean isPos, int balance, List<Transaction> entries) {
         this.index = index;
         this.name = name;
@@ -44,26 +40,26 @@ public class Account implements Savable {
 
     // REQUIRE: entry must be a valid transaction
     // MODIFIES: this
-    // EFFECT: add a given entry to account entries and updates account balance.
+    // EFFECT: adds a given entry to account entries and updates account balance based on whether it is 'from' or 'to'.
     public void addEntry(Transaction entry, boolean subtract) {
         entries.add(entry);
         setBalance(entry.getValue(), subtract);
     }
 
-    // REQUIRE: Given index must be a valid entry index of the account.
+    // REQUIRE: Given index must be a valid (existing) entry index of the account.
     // MODIFIES: this
-    // EFFECT: Removes an entry with a given index from the account's entry list and updates the account's balance.
-    public boolean removeEntry(int index, boolean subtract) {
+    // EFFECT: Removes an entry with a given index from the account's entry list and updates the account's balance
+    //         whether it was 'from' or 'to' account
+    public void removeEntry(int index, boolean subtract) {
         int listIndex = 0;
         for (Transaction entry: entries) {
             if (entry.getIndex() == index) {
                 entries.remove(listIndex);
                 setBalance(entry.getValue(), subtract);
-                return true;
+                break;
             }
             listIndex++;
         }
-        return false;
     }
 
     // REQUIRES: amount > 0
@@ -77,9 +73,8 @@ public class Account implements Savable {
         }
     }
 
-
     // MODIFIES: this
-    // EFFECT: set balance manually
+    // EFFECT: set balance manually (mainly to edit a mistake in initialization of a new account)
     public void setBalance(int amount) {
         balance = amount;
     }
@@ -98,43 +93,37 @@ public class Account implements Savable {
         this.name = name;
     }
 
-
     // MODIFIES: this
     // EFFECT: edits the isPos status of an account
     public void setIsPos(boolean isPos) {
         this.isPos = isPos;
     }
 
+    // getters
 
-    // EFFECT: get the index of an account
     public int getIndex() {
         return index;
     }
 
-
-    // EFFECT: get the name of an account
     public String getName() {
         return name;
     }
 
-
-    // EFFECT: get the isPos status of an account
     public boolean getIsPos() {
         return isPos;
     }
 
-
-    // EFFECT: get the current balance of an account
     public int getBalance() {
         return balance;
     }
 
-
-    // EFFECT: get the entry list of an account
     public List<Transaction> getEntries() {
         return entries;
     }
 
+    // serialization
+
+    // EFFECT: create a Json object from the account components and return it
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("index", index);
@@ -145,13 +134,12 @@ public class Account implements Savable {
         return json;
     }
 
+    // EFFECT: create a Json Array from the account's entries list and return it
     private JSONArray entriesToJson() {
         JSONArray jsonArray = new JSONArray();
-
         for (Transaction entry : entries) {
             jsonArray.put(entry.toJson());
         }
-
         return jsonArray;
     }
 }

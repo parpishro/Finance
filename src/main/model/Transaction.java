@@ -3,10 +3,8 @@ package model;
 import org.json.JSONObject;
 import persistence.Savable;
 
-import java.io.Serializable;
-
+// Represents a single transaction entry containing index, type, date, value, and from/to accounts
 public class Transaction implements Savable {
-    private static final long serialVersionUID = 1L;
     private int index;
     private String type;
     private String date;
@@ -80,6 +78,7 @@ public class Transaction implements Savable {
         return to;
     }
 
+    // EFFECT: create a Json object from the transaction components and return it
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("index", index);

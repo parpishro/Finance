@@ -10,23 +10,24 @@ import java.util.List;
 // master object containing all the accounts and their associated transactions
 public class Master implements Savable {
     private final String user;
+    private int totalBalance;
     private final List<Account> accounts;
     private final List<Transaction> allTransactions;
-    private int totalBalance;
 
-
-    // EFFECT: constructs a master object consisting of empty accounts list and allTransaction list with 0 totalBalance
+    // REQUIRES: given user's name must non-empty and consisting of ony letters
+    // EFFECT: constructs a master object consisting of a given user's name, zero total balance, empty accounts list,
+    //         and empty allTransaction list
     public Master(String user) {
         this.user = user;
+        totalBalance = 0;
         accounts = new ArrayList<>();
         allTransactions = new ArrayList<>();
-        totalBalance = 0;
     }
 
     // REQUIRES: a unique (non-existing) account name
     // MODIFIES: this
     // EFFECT: adds the given account to the accounts after updating its default index (-1) with a unique index, and
-    // updates the total balance
+    //         updates the total balance
     public void addAccount(Account account) {
         int index = accounts.size();
         if (index != 0) {
@@ -43,24 +44,23 @@ public class Master implements Savable {
     // REQUIRES: given account name must be a (existing) account name, for the given account balance = 0
     // MODIFIES: this
     // EFFECT: removes the account with given name from accounts
-    public boolean removeAccount(String name) {
+    public void removeAccount(String name) {
         int listIndex = 0;
         for (Account account: accounts) {
             if (account.getName().equals(name)) {
                 accounts.remove(listIndex);
-                return true;
+                break;
             }
             listIndex++;
         }
-        return false;
     }
 
     // REQUIRE: 'type' must be one of the transaction category types: "Earning", "Spending", "Transfer", "Investing",
-    // "Saving", "Lending", or "Borrowing", 'date' must be valid date with "YYYY-MM-DD" format, 'from' and 'to' must be
-    // one of existing accounts
+    //          "Saving", "Lending", or "Borrowing", 'date' must be valid date with "YYYY-MM-DD" format, value must be
+    //          > 0 , 'from' and 'to' must be valid (existing) account names
     // MODIFIES: this
-    // EFFECT: create a new transaction from a generated unique index and given type, date, value, 'from' and 'to'
-    // accounts and add the transaction to allTransaction list and update totalBalance (return the created transaction)
+    // EFFECT: given a transaction, update its default index uniquely. update totalBalance, add it to allTransaction
+    //         list, and both 'from' and 'to' accounts' entries list.
     public void addTransaction(Transaction entry) {
         int index = allTransactions.size();
         if (index != 0) {
@@ -76,7 +76,11 @@ public class Master implements Savable {
         this.getAccount(entry.getTo()).addEntry(entry, false);
     }
 
-
+    // REQUIRE: 'type' must be one of the transaction category types: "Earning", "Spending", "Transfer", "Investing",
+    //          "Saving", "Lending", or "Borrowing", 'date' must be valid date with "YYYY-MM-DD" format, value must be
+    //          > 0 , 'from' and 'to' must be valid (existing) account names
+    // MODIFIES: this
+    // EFFECT: given a transaction components, create a transaction and add it to the allTransaction list
     public void addTransaction(int index, String type, String date, int value, String from, String to) {
         Transaction transaction = new Transaction(index, type, date, value, from, to);
         allTransactions.add(transaction);
@@ -86,8 +90,8 @@ public class Master implements Savable {
     // REQUIRES: given index must be a valid index (existing)
     // MODIFIES: this
     // EFFECT: find the transaction with the given index, remove it from allTransactions, update the totalBalance, and
-    // return the found transaction
-    public boolean removeTransaction(int index) {
+    //         return the found transaction
+    public void removeTransaction(int index) {
         int listIndex = 0;
         for (Transaction entry: allTransactions) {
             if (entry.getIndex() == index) {
@@ -95,13 +99,50 @@ public class Master implements Savable {
                 updateBalance(entry.getType(), -entry.getValue());
                 this.getAccount(entry.getFrom()).removeEntry(index, false);
                 this.getAccount(entry.getTo()).removeEntry(index, true);
-                return true;
+                break;
             }
             listIndex++;
         }
-        return false;
     }
 
+    // REQUIRES: type must be a valid type, value must be > 0
+    // MODIFIES: this
+    // EFFECT: update the total balance if its value is coming in (income) or going out (spending)
+    private void updateBalance(String type, int value) {
+        if (type.equals("Earning")) {
+            totalBalance += value;
+        } else if (type.equals("Spending")) {
+            totalBalance -= value;
+        }
+    }
+
+    // EFFECT: return number of accounts in the master
+    public int numberOfAccounts() {
+        return accounts.size();
+    }
+
+    // EFFECT: return number of transactions in the master
+    public int numberOfTransactions() {
+        return allTransactions.size();
+    }
+
+    // getters
+
+    public String getUser() {
+        return user;
+    }
+
+    public int getTotalBalance() {
+        return totalBalance;
+    }
+
+    public List<Transaction> getAllTransactions() {
+        return allTransactions;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
 
     // REQUIRES: account name must be a valid account name
     // EFFECT: find the account with given name from accounts and returns it
@@ -116,17 +157,6 @@ public class Master implements Savable {
         return found;
     }
 
-
-    // EFFECT: return the total balance of all accounts
-    public int getTotalBalance() {
-        return totalBalance;
-    }
-
-    public List<Transaction> getAllTransactions() {
-        return allTransactions;
-    }
-
-
     // EFFECT: return the list of all existing accounts
     public List<String> getAccountNames() {
         List<String> accountNames = new ArrayList<>();
@@ -136,72 +166,39 @@ public class Master implements Savable {
         return accountNames;
     }
 
+    // setters
 
-    public String getUser() {
-        return user;
+    public void setTotalBalance(int totalBalance) {
+        this.totalBalance = totalBalance;
     }
 
+    // serialization
 
-    // EFFECT: return the list of all transactions
-    public List<Transaction> getMasterAccount() {
-        return allTransactions;
-    }
-
-
-    public List<Account> getAccountList() {
-        return accounts;
-    }
-
-    private void updateBalance(String type, int value) {
-        if (type.equals("Earning")) {
-            totalBalance += value;
-        } else if (type.equals("Spending")) {
-            totalBalance -= value;
-        }
-    }
-
+    // EFFECT: create a Json object from the master components and return it
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("user", user);
+        json.put("totalBalance", totalBalance);
         json.put("accounts", accountsToJson());
         json.put("allTransactions", allTransactionsToJson());
-        json.put("totalBalance", totalBalance);
         return json;
     }
 
-    // EFFECTS: returns things in this workroom as a JSON array
+    // EFFECT: create a Json Array from the master's accounts list and return it
     private JSONArray accountsToJson() {
         JSONArray jsonArray = new JSONArray();
-
         for (Account account : accounts) {
             jsonArray.put(account.toJson());
         }
         return jsonArray;
     }
 
+    // EFFECT: create a Json Array from the master's allTransactions list and return it
     private JSONArray allTransactionsToJson() {
         JSONArray jsonArray = new JSONArray();
-
         for (Transaction entry : allTransactions) {
             jsonArray.put(entry.toJson());
         }
         return jsonArray;
-    }
-
-    public void setTotalBalance(int totalBalance) {
-        this.totalBalance = totalBalance;
-    }
-
-    public int numberOfAccounts() {
-        return accounts.size();
-
-    }
-
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    public int numberOfTransactions() {
-        return allTransactions.size();
     }
 }
