@@ -14,14 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+// Represents a reader that loads JSON representation of master from file to an object
 public class JsonReader {
     private Master master;
     private final String path;
 
+    // EFFECTS: constructs reader to load from destination file
     public JsonReader(String path) throws IOException {
         this.path = path;
     }
 
+    // MODIFIES: this
+    // EFFECTS: loads JSON representation of a file to master
     public Master load() throws IOException {
         StringBuilder fileContent = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(path), StandardCharsets.UTF_8)) {
@@ -35,6 +39,8 @@ public class JsonReader {
         return master;
     }
 
+    // MODIFIES: this
+    // EFFECTS: loads JSON Array representation of accounts in master Json to master
     private void parseAccounts(JSONArray accounts) {
         for (Object json : accounts) {
             JSONObject nextAccount = (JSONObject) json;
@@ -49,6 +55,8 @@ public class JsonReader {
     }
 
 
+    // MODIFIES: this
+    // EFFECTS: loads JSON Array representation of transactions in master Json to master
     private void parseAllTransactions(JSONArray transactions) {
         for (Object json : transactions) {
             JSONObject nextTransaction = (JSONObject) json;
@@ -62,6 +70,8 @@ public class JsonReader {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: loads JSON Array representation of transactions in accounts in the master Json to accounts in master
     private List<Transaction> parseEntries(JSONArray transactions) {
         List<Transaction> entries = new ArrayList<>();
         for (Object json : transactions) {

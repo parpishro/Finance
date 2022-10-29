@@ -85,7 +85,10 @@ value (add *Account* into *Master*).
 - As a user, I want to be able to enter a financial transaction that is recorded automatically in its associated
 accounts (both 'from' and 'to' accounts must he created before transaction entry) and under a category type  
  ( *Earning*, *Spending*, *Transfer*, *Investing*, *Saving*, *Borrowing*, *Lending*). This will be adding 
-- **Transaction** to both **Account** and **Master**
+**Transaction** to both **Account** records and **Master** records
+- As a user I want to be able to load the master records from an existing file
+- As a new user, I want to be able to create a new master file
+- As a user, I want to be able to save the editted master object into the file
 - As a user, I want to be able to remove a financial transaction from its associated accounts and master account.
 - As a user, I want to be able to remove an account (balance must be zero) 
 - As a user, i want to be able to view the current balance of an account 

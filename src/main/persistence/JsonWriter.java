@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 
-// Represents a writer that writes JSON representation of workroom to file
+// Represents a writer that writes JSON representation of master to file
 public class JsonWriter {
     private final PrintWriter writer;
 
@@ -16,7 +16,7 @@ public class JsonWriter {
 
 
     // MODIFIES: this
-    // EFFECTS: writes JSON representation of workroom to file
+    // EFFECTS: writes JSON representation of master to file
     public void save(Master master) {
         JSONObject json = master.toJson();
         writer.print(json.toString(2));
