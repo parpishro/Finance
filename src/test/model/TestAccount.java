@@ -95,6 +95,14 @@ public class TestAccount {
     }
 
     @Test
+    void testRemoveEntryNull() {
+        acc2.removeEntry(1, true);
+
+        assertEquals(0, acc2.getEntries().size());
+        assertEquals(20000, acc2.getBalance());
+    }
+
+    @Test
     void testRemoveEntrySingleAdd() {
         acc2.addEntry(entry1, false);
         acc2.removeEntry(1, true);
