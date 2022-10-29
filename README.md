@@ -71,7 +71,7 @@ times. User can choose "from" and "to" accounts, transaction category, the value
 application will enter the transaction into respective 'from' and 'to' accounts based on the inputs, and also record it
 in a master account that holds all transactions. In addition to creating accounts, user can edit account information.
 
-And finally, user can create reports in the table format or visualization (later will be implemented with gui) in pie 
+Finally, user can create reports in the table format or visualization (later will be implemented with gui) in pie 
 chart or time graph. A user can choose to print out balance, last 20 transaction and all transactions for any specific
 account or for master account. A user can also produce the visualization of the chosen category or account (phase > 1).
 
