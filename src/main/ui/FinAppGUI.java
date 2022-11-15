@@ -3,6 +3,7 @@ package ui;
 import model.Account;
 import model.Master;
 import model.Transaction;
+import persistence.JsonWriter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -11,126 +12,212 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
+
+import static java.lang.Math.max;
 
 
+//
 public class FinAppGUI extends JFrame {
 
     private static final int MAIN_WIDTH = 800;
     private static final int MAIN_HEIGHT = 600;
-    private static final int MENU_WIDTH = MAIN_WIDTH / 2;
-    private static final int MENU_HEIGHT = MAIN_HEIGHT / 2;
-    private static final int BL_WIDTH = MAIN_WIDTH - MENU_WIDTH;
-    private static final int BL_HEIGHT = MENU_HEIGHT;
-    private static final int TR_WIDTH = MAIN_WIDTH;
-    private static final int TR_HEIGHT = MAIN_HEIGHT - MENU_HEIGHT;
+    private static final int ACCOUNT_PANE_WIDTH = MAIN_WIDTH / 2;
+    private static final int ACCOUNT_PANE_HEIGHT = MAIN_HEIGHT / 2;
+    private static final int BALANCE_PANE_WIDTH = MAIN_WIDTH - ACCOUNT_PANE_WIDTH;
+    private static final int BALANCE_PANE_HEIGHT = ACCOUNT_PANE_HEIGHT;
+    private static final int TRANSACTION_PANE_WIDTH = MAIN_WIDTH;
+    private static final int TRANSACTION_PANE_HEIGHT = MAIN_HEIGHT - ACCOUNT_PANE_HEIGHT;
 
-    private static final int ACC_BL_WIDTH = MAIN_WIDTH;
-    private static final int ACC_BL_HEIGHT = MAIN_HEIGHT / 4;
-    private static final int ACC_TR_WIDTH = MAIN_WIDTH;
-    private static final int ACC_TR_HEIGHT = MAIN_HEIGHT - ACC_BL_HEIGHT;
+    private static final int ACC_BALANCE_WIDTH = MAIN_WIDTH;
+    private static final int ACC_BALANCE_HEIGHT = MAIN_HEIGHT / 4;
+    private static final int ACC_TRANSACTION_WIDTH = MAIN_WIDTH;
+    private static final int ACC_TRANSACTION_HEIGHT = MAIN_HEIGHT - ACC_BALANCE_HEIGHT;
+
+    private static final int TR_NUM = 3;
 
     private static final String MAIN_TITLE = "Finance Manager";
-    private static final String INIT_TITLE = "Start Finance App";
-    private static final String VIEW_DESCRIPTOR = "View";
-    private static final String ADD_DESCRIPTOR = "Add";
-    private static final String REMOVE_DESCRIPTOR = "Remove";
-    private static final String EDIT_DESCRIPTOR = "Edit";
+
+    private static final String PATH = "./data/";
 
     private JDesktopPane desktop;
-    private BlBox blBox;
-    private TrBox trBox;
-    private JPanel accMenu;
-    private JPanel balancePanel;
-    private AcEntry acEntry;
-    private TrEntry trEntry;
-    private SaveButton saveButton;
+    private JMenuBar menuBar;
+    private JPanel accPane;
+    private JPanel blPane;
+    private JPanel trPane;
 
     private Master master;
+    private Account account;
 
-    public FinAppGUI() throws IOException {
+    // EFFECT:
+    public FinAppGUI(Master master) throws IOException {
 
-        master = (new Init()).getMaster();
+        this.master = master;
+
+        setupMain();
+        menu();
+        accountsPane();
+        balancePane(true);
+        transactionsPane(true);
+
+        setVisible(true);
+    }
+
+
+    // REQUIRES:
+    // MODIFIES:
+    // EFFECT:
+    private void setupMain() {
 
         desktop = new JDesktopPane();
+        setContentPane(desktop);
         desktop.addMouseListener(new DesktopFocusAction());
 
-
-        setContentPane(desktop);
         setTitle(MAIN_TITLE);
         setSize(MAIN_WIDTH, MAIN_HEIGHT);
 
-        addMenu();
-        addBalancePanel(master.getTotalBalance(), BL_WIDTH, BL_HEIGHT);
-        addAccountsPanel();
-
-        addTransactionsPanel();
-
-
-
-
-
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         centreOnScreen();
-        setVisible(true);
-
-
-
-    }
-
-    private void addTransactionsPanel() {
-    }
-
-    private void addBalancePanel(int balance, int width, int height) {
-        balancePanel = new JPanel();
-        balancePanel.setLayout(new GridLayout(1, 1));
-        JLabel balanceText = new JLabel(Double.toString(balance / 100.0) + " $");
-        balanceText.setFont(balanceText.getFont().deriveFont(50f));
-        balancePanel.add(balanceText, BorderLayout.CENTER);
-        balanceText.setHorizontalAlignment(0);
-        setBorder(balancePanel, "Balance");
-        balancePanel.setVisible(true);
-        balancePanel.setSize(width, height);
-        balancePanel.setLocation(MAIN_WIDTH - MENU_WIDTH, 0);
-        desktop.add(balancePanel);
 
 
     }
 
-    /**
-     * Adds menu bar.
-     */
-    private void addMenu() {
-        JMenuBar menuBar = new JMenuBar();
+
+    // REQUIRES:
+    // MODIFIES:
+    // EFFECT: Adds menu bar
+    private void menu() {
+        menuBar = new JMenuBar();
 
         JMenu accountMenu = new JMenu("Account");
         addMenuItem(accountMenu, new AddAccountAction(), null);
-        addMenuItem(accountMenu, new RemoveEntryAction(), null);
+        addMenuItem(accountMenu, new RemoveAccountAction(), null);
         addMenuItem(accountMenu, new EditAccountAction(), null);
         menuBar.add(accountMenu);
 
         JMenu transactionMenu = new JMenu("Transaction");
         //systemMenu.setMnemonic('y');
         addMenuItem(transactionMenu, new AddEntryAction(), KeyStroke.getKeyStroke("control T"));
-        //addMenuItem(transactionMenu, new RemoveEntryAction(),null);
-        //addMenuItem(transactionMenu, new EditEntryAction(),null);
+        addMenuItem(transactionMenu, new RemoveEntryAction(),null);
+        addMenuItem(transactionMenu, new EditEntryAction(),null);
         menuBar.add(transactionMenu);
+
+        JMenu saveMenu = new JMenu("Save");
+        addMenuItem(saveMenu, new SaveAction(), KeyStroke.getKeyStroke("control S"));
+        menuBar.add(saveMenu);
 
         setJMenuBar(menuBar);
     }
 
-    /**
-     * Adds an item with given handler to the given menu
-     * @param theMenu  menu to which new item is added
-     * @param action   handler for new menu item
-     * @param accelerator    keystroke accelerator for this menu item
-     */
+
+    // REQUIRES:
+    // MODIFIES:
+    // EFFECT: Adds an item with given handler to the given menu
     private void addMenuItem(JMenu theMenu, AbstractAction action, KeyStroke accelerator) {
         JMenuItem menuItem = new JMenuItem(action);
         menuItem.setMnemonic(menuItem.getText().charAt(0));
         menuItem.setAccelerator(accelerator);
         theMenu.add(menuItem);
     }
+
+
+    // REQUIRES:
+    // MODIFIES:
+    // EFFECT:
+    private void accountsPane() {
+        accPane = new JPanel();
+        accPane.setLayout(new BorderLayout());
+        JPanel buttonPanel = new JPanel();
+        int numAccounts = master.numberOfAccounts();
+        buttonPanel.setLayout(new GridLayout(numAccounts,1));
+        for (Account account: master.getAccounts()) {
+            JButton btn = new JButton(account.getName());
+            btn.setSize(ACCOUNT_PANE_WIDTH, ACCOUNT_PANE_HEIGHT / numAccounts);
+            btn.addActionListener(new AccountMenuAction(account));
+            buttonPanel.add(btn);
+        }
+        accPane.add(buttonPanel, BorderLayout.CENTER);
+        setBorder(accPane, "Accounts");
+        accPane.setVisible(true);
+        accPane.setSize(ACCOUNT_PANE_WIDTH, ACCOUNT_PANE_HEIGHT);
+        desktop.add(accPane);
+    }
+
+
+    // REQUIRES:
+    // MODIFIES:
+    // EFFECT:
+    private void balancePane(boolean isMaster) {
+        blPane = new JPanel();
+        blPane.setLayout(new GridLayout(1, 1));
+        setBorder(blPane, "Balance");
+        JLabel balanceText;
+
+        if (isMaster) {
+            balanceText = new JLabel((master.getTotalBalance() / 100.0) + " $");
+            blPane.setSize(BALANCE_PANE_WIDTH, BALANCE_PANE_HEIGHT);
+            blPane.setLocation(MAIN_WIDTH - BALANCE_PANE_WIDTH, 0);
+        } else {
+            balanceText = new JLabel((account.getBalance() / 100.0) + " $");
+            blPane.setSize(ACC_BALANCE_WIDTH, ACC_BALANCE_HEIGHT);
+            blPane.setLocation(0, 0);
+        }
+
+        balanceText.setFont(balanceText.getFont().deriveFont(50f));
+        balanceText.setHorizontalAlignment(0);
+        blPane.add(balanceText, BorderLayout.CENTER);
+
+
+        blPane.setVisible(true);
+        desktop.add(blPane);
+    }
+
+
+    // REQUIRES:
+    // MODIFIES:
+    // EFFECT:
+    private void transactionsPane(boolean isMaster) {
+        trPane = new JPanel();
+        trPane.setLayout(new GridLayout(1, 1));
+        setBorder(trPane, "Transactions");
+        JTable trTable;
+
+        if (isMaster) {
+            trTable = fillTrTable(master.getAllTransactions());
+            trPane.setSize(TRANSACTION_PANE_WIDTH, TRANSACTION_PANE_HEIGHT);
+            trPane.setLocation(0, ACCOUNT_PANE_HEIGHT);
+        } else {
+            trTable = fillTrTable(account.getEntries());
+            trPane.setSize(ACC_TRANSACTION_WIDTH, ACC_TRANSACTION_HEIGHT);
+            trPane.setLocation(0, MAIN_HEIGHT - ACC_TRANSACTION_HEIGHT);
+        }
+
+
+        trPane.add(trTable, BorderLayout.CENTER);
+        trPane.setVisible(true);
+        desktop.add(trPane);
+    }
+
+    private JTable fillTrTable(List<Transaction> entries) {
+        int trNum = max(0, entries.size() - TR_NUM);
+        String [][] data = new String[entries.size() - trNum][6];
+        List<Transaction> transactions = entries.subList(trNum, entries.size());
+        for (int i = 0; i < entries.size() - trNum; i++) {
+            data[i][0] = Integer.toString(transactions.get(i).getIndex());
+            data[i][1] = transactions.get(i).getType();
+            data[i][2] = transactions.get(i).getDate();
+            data[i][3] = Double.toString(transactions.get(i).getValue() / 100.0);
+            data[i][4] = transactions.get(i).getFrom();
+            data[i][5] = transactions.get(i).getTo();
+        }
+
+        String[] columnNames = { "Index", "Type", "Date", "Value", "From", "To"};
+        JTable trTable = new JTable(data, columnNames);
+        return trTable;
+    }
+
 
     private void setBorder(JPanel panel, String title) {
         TitledBorder border = new TitledBorder(title);
@@ -139,27 +226,8 @@ public class FinAppGUI extends JFrame {
         panel.setBorder(border);
     }
 
-    /**
-     * Helper to add control buttons.
-     */
-    private void addAccountsPanel() {
-        accMenu = new JPanel();
-        accMenu.setLayout(new BorderLayout());
-        JPanel buttonPanel = new JPanel();
-        int numAccounts = master.numberOfAccounts();
-        buttonPanel.setLayout(new GridLayout(numAccounts,1));
-        for (Account account: master.getAccounts()) {
-            JButton btn = new JButton(account.getName());
-            btn.setSize(MENU_WIDTH, MENU_HEIGHT / numAccounts);
-            btn.addActionListener(new AccountMenuAction(account));
-            buttonPanel.add(btn);
-        }
-        accMenu.add(buttonPanel, BorderLayout.CENTER);
-        setBorder(accMenu, "Accounts");
-        accMenu.setVisible(true);
-        accMenu.setSize(MENU_WIDTH, MENU_HEIGHT);
-        desktop.add(accMenu);
-    }
+
+
 
     /**
      * Helper to centre main application window on desktop
@@ -201,13 +269,13 @@ public class FinAppGUI extends JFrame {
                     "Please Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
             String accountName = name.getText();
             Boolean isPos = Boolean.parseBoolean(pos.getText());
-            int balance = Integer.parseInt(bal.getText()) * 100;
+            int balance = (int) (Double.parseDouble(bal.getText()) * 100);
             if (result == JOptionPane.OK_OPTION) {
                 Account account = new Account(-1, accountName, isPos, balance);
                 master.addAccount(account);
-                desktop.remove(accMenu);
-                addAccountsPanel();
+
             }
+            refreshPanes();
         }
 
     }
@@ -235,9 +303,10 @@ public class FinAppGUI extends JFrame {
             String accountName = name.getText();
             if (result == JOptionPane.OK_OPTION) {
                 master.removeAccount(accountName);
-                desktop.remove(accMenu);
-                addAccountsPanel();
+                desktop.remove(accPane);
+                accountsPane();
             }
+            refreshPanes();
         }
 
     }
@@ -285,9 +354,6 @@ public class FinAppGUI extends JFrame {
 
                 int result2 = JOptionPane.showConfirmDialog(null, editAccount,
                         "Please Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
-                accountName = newName.getText();
-                Boolean isPos = Boolean.parseBoolean(pos.getText());
-                int balance = Integer.parseInt(bal.getText()) * 100;
                 if (result2 == JOptionPane.OK_OPTION) {
                     account.setIndex(Integer.parseInt(index.getText()));
                     account.setName(newName.getText());
@@ -295,9 +361,21 @@ public class FinAppGUI extends JFrame {
                     account.setBalance(Integer.parseInt(bal.getText()) * 100);
                 }
             }
+            refreshPanes();
         }
 
     }
+
+
+    private void refreshPanes() {
+        desktop.remove(accPane);
+        accountsPane();
+        desktop.remove(blPane);
+        balancePane(true);
+        desktop.remove(trPane);
+        transactionsPane(true);
+    }
+
 
     /**
      * Represents action to be taken when user wants to add a new code
@@ -338,6 +416,7 @@ public class FinAppGUI extends JFrame {
                 master.addTransaction(new Transaction(-1, type.getText(), date.getText(),
                         (int) (Double.parseDouble(value.getText()) * 100), from.getText(), to.getText()));
             }
+            refreshPanes();
         }
 
     }
@@ -366,6 +445,107 @@ public class FinAppGUI extends JFrame {
             if (result == JOptionPane.OK_OPTION) {
                 master.removeTransaction(entryIndex);
             }
+            refreshPanes();
+        }
+
+    }
+
+    /**
+     * Represents action to be taken when user wants to add a new code
+     * to the system.
+     */
+    private class EditEntryAction extends AbstractAction {
+
+        EditEntryAction() {
+            super("Edit Transaction Entry");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+            JTextField index = new JTextField(5);
+
+            JPanel editEntry = new JPanel();
+            editEntry.add(new JLabel("Index: "));
+            editEntry.add(index);
+
+            int result = JOptionPane.showConfirmDialog(null, editEntry,
+                    "Please Enter Transaction Index", JOptionPane.OK_CANCEL_OPTION);
+            int entryIndex = Integer.parseInt(index.getText());
+            if (result == JOptionPane.OK_OPTION) {
+                Transaction entry = master.getAllTransactions().get(entryIndex);
+                JTextField changeIndex = new JTextField(Integer.toString(entry.getIndex()), 5);
+                JTextField type = new JTextField(entry.getType(), 5);
+                JTextField date = new JTextField(entry.getDate(), 5);
+                JTextField value = new JTextField(Double.toString(entry.getValue() / 100.0),5);
+                JTextField from = new JTextField(entry.getFrom(), 5);
+                JTextField to = new JTextField(entry.getTo(), 5);
+
+                editEntry = new JPanel();
+                editEntry.add(new JLabel("Index: "));
+                editEntry.add(changeIndex);
+                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
+                editEntry.add(new JLabel("Type: "));
+                editEntry.add(type);
+                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
+                editEntry.add(new JLabel("Date: "));
+                editEntry.add(date);
+                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
+                editEntry.add(new JLabel("Value: "));
+                editEntry.add(value);
+                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
+                editEntry.add(new JLabel("From: "));
+                editEntry.add(from);
+                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
+                editEntry.add(new JLabel("To: "));
+                editEntry.add(to);
+
+                int result2 = JOptionPane.showConfirmDialog(null, editEntry,
+                        "Please Edit Transaction Details", JOptionPane.OK_CANCEL_OPTION);
+                if (result2 == JOptionPane.OK_OPTION) {
+                    entry.setIndex(Integer.parseInt(changeIndex.getText()));
+                    entry.setType(type.getText());
+                    entry.setDate(date.getText());
+                    entry.setValue(Integer.parseInt(value.getText()) * 100);
+                    entry.setFrom(from.getText());
+                    entry.setTo(to.getText());
+                }
+            }
+
+            refreshPanes();
+        }
+
+    }
+
+
+    /**
+     * Represents action to be taken when user wants to add a new code
+     * to the system.
+     */
+    private class SaveAction extends AbstractAction {
+
+        SaveAction() {
+            super("Save Data");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+
+            JPanel saveData = new JPanel();
+
+            saveData.add(new JLabel("Do you want to save?"));
+
+            JsonWriter jsonWriter;
+            int result = JOptionPane.showConfirmDialog(null, saveData,
+                    "Save Data", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    jsonWriter = new JsonWriter(PATH + master.getUser() + ".json");
+                    jsonWriter.save(master);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         }
 
     }
@@ -387,10 +567,10 @@ public class FinAppGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent evt) {
             evt.getActionCommand();
-            accMenu.setVisible(false);
+            accPane.setVisible(false);
             JPanel accFrame = new JPanel();
             accFrame.setVisible(true);
-            accFrame.setSize(MENU_WIDTH, MENU_HEIGHT);
+            accFrame.setSize(ACCOUNT_PANE_WIDTH, ACCOUNT_PANE_HEIGHT);
             desktop.add(accFrame, BorderLayout.WEST);
             setBorder(accFrame, account.getName());
         }
@@ -409,3 +589,4 @@ public class FinAppGUI extends JFrame {
 
 
 }
+

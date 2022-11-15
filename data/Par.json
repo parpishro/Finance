@@ -1,13 +1,23 @@
 {
-  "totalBalance": 22750,
-  "allTransactions": [{
-    "date": "2022-10-15",
-    "index": 0,
-    "from": "Cash",
-    "to": "Expenditure",
-    "type": "Spending",
-    "value": 1250
-  }],
+  "totalBalance": 30350,
+  "allTransactions": [
+    {
+      "date": "2022-10-15",
+      "index": 0,
+      "from": "Cash",
+      "to": "Expenditure",
+      "type": "Spending",
+      "value": 1250
+    },
+    {
+      "date": "2022-11-12",
+      "index": 1,
+      "from": "Saving",
+      "to": "Expenditure",
+      "type": "Spending",
+      "value": 2400
+    }
+  ],
   "accounts": [
     {
       "entries": [{
@@ -24,15 +34,25 @@
       "index": 0
     },
     {
-      "entries": [{
-        "date": "2022-10-15",
-        "index": 0,
-        "from": "Cash",
-        "to": "Expenditure",
-        "type": "Spending",
-        "value": 1250
-      }],
-      "balance": 1250,
+      "entries": [
+        {
+          "date": "2022-10-15",
+          "index": 0,
+          "from": "Cash",
+          "to": "Expenditure",
+          "type": "Spending",
+          "value": 1250
+        },
+        {
+          "date": "2022-11-12",
+          "index": 1,
+          "from": "Saving",
+          "to": "Expenditure",
+          "type": "Spending",
+          "value": 2400
+        }
+      ],
+      "balance": 3650,
       "isPos": false,
       "name": "Expenditure",
       "index": 1
@@ -43,6 +63,20 @@
       "isPos": false,
       "name": "Credit",
       "index": 2
+    },
+    {
+      "entries": [{
+        "date": "2022-11-12",
+        "index": 1,
+        "from": "Saving",
+        "to": "Expenditure",
+        "type": "Spending",
+        "value": 2400
+      }],
+      "balance": 7600,
+      "isPos": true,
+      "name": "Saving",
+      "index": 3
     }
   ],
   "user": "Par"

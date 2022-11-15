@@ -1,4 +1,4 @@
-package ui;
+package ui.consule;
 
 import model.Account;
 import model.Master;

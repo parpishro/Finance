@@ -13,11 +13,13 @@ import static javax.swing.JOptionPane.YES_OPTION;
 public class Init {
 
     private static final String PATH = "./data/";
+    private static final String INIT_TITLE = "Start Finance App";
+
     private Master master;
 
     public Init() throws IOException {
         Object[] options = {"Yes", "No", "Quit"};
-        String title = "Start Finance Manager";
+        String title = INIT_TITLE;
         String message = "Are you an existing user?";
         DialogBox box = new DialogBox(options, title, message);
         int n = box.getAnswer();
