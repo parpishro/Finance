@@ -3,11 +3,15 @@ package ui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 
-public class MasterFrame {
+public class MasterFrame implements ActionListener {
 
     private JFrame frame;
+    private JLabel label;
+    private JTextField field;
 
     public MasterFrame(String title) {
         this.frame = new JFrame(title);
@@ -15,9 +19,14 @@ public class MasterFrame {
         frame.setPreferredSize(new Dimension(1000, 800));
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
-        panel.add(new JButton("press"));
-        panel.add(new JTextField(5));
-        panel.add(new JLabel("gglabel"));
+        JButton btn = new JButton("press");
+        panel.add(btn);
+        btn.setActionCommand("myButton");
+        btn.addActionListener(this);
+        field = new JTextField(5);
+        panel.add(field);
+        label = new JLabel("gglabel");
+        panel.add(label);
         panel.add(new JCheckBoxMenuItem("kkkk"));
 //        panel.add(new JFileChooser());
         panel.add(new JMenu("menu"));
@@ -38,6 +47,13 @@ public class MasterFrame {
         ((JPanel) frame.getContentPane()).setBorder(new EmptyBorder(13, 13, 13, 13));
         frame.pack();
 
+    }
+
+    //This is the method that is called when the the JButton btn is clicked
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("myButton")) {
+            label.setText(field.getText());
+        }
     }
 
 
