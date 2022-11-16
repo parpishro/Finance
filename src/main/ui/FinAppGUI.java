@@ -13,13 +13,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import static java.lang.Math.max;
 
 
-//
+// Represents a graphical user interface for finance app
 public class FinAppGUI extends JFrame {
 
     private static final int MAIN_WIDTH = 800;
@@ -51,24 +50,23 @@ public class FinAppGUI extends JFrame {
     private Master master;
     private Account account;
 
-    // EFFECT:
-    public FinAppGUI(Master master) throws IOException {
+    // EFFECT: constructs a finance app gui with a given master and sets up the frame and its panes
+    public FinAppGUI(Master master) {
 
         this.master = master;
 
         setupMain();
-        menu();
-        accountsPane();
-        balancePane(true);
-        transactionsPane(true);
-
+        setupPanes();
         setVisible(true);
     }
 
 
-    // REQUIRES:
-    // MODIFIES:
-    // EFFECT:
+    // Constructor Helpers:
+
+    // 1. Main Desktop Frame:
+
+    // MODIFIES: this
+    // EFFECT: sets up the main desktop panel with a title and dimension for constructor
     private void setupMain() {
 
         desktop = new JDesktopPane();
@@ -80,15 +78,35 @@ public class FinAppGUI extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         centreOnScreen();
-
-
     }
 
 
-    // REQUIRES:
-    // MODIFIES:
-    // EFFECT: Adds menu bar
+    // MODIFIES: this
+    // EFFECT: Helper to centre main application window on desktop
+    private void centreOnScreen() {
+        int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int height = Toolkit.getDefaultToolkit().getScreenSize().height;
+        setLocation((width - getWidth()) / 2, (height - getHeight()) / 2);
+    }
+
+
+    // MODIFIES: this
+    // EFFECT: sets up the menu bar, accounts pain, balance pane, and transactions pane for constructor
+    private void setupPanes() {
+
+        menu();
+        accountsPane();
+        balancePane(true);
+        transactionsPane(true);
+    }
+
+
+    // 2. Menu Bar
+
+    // MODIFIES: this
+    // EFFECT: Adds the menu bar for constructor's menu() helper with three tab: Account, Transaction, and Save
     private void menu() {
+
         menuBar = new JMenuBar();
 
         JMenu accountMenu = new JMenu("Account");
@@ -98,7 +116,6 @@ public class FinAppGUI extends JFrame {
         menuBar.add(accountMenu);
 
         JMenu transactionMenu = new JMenu("Transaction");
-        //systemMenu.setMnemonic('y');
         addMenuItem(transactionMenu, new AddEntryAction(), KeyStroke.getKeyStroke("control T"));
         addMenuItem(transactionMenu, new RemoveEntryAction(),null);
         addMenuItem(transactionMenu, new EditEntryAction(),null);
@@ -112,98 +129,116 @@ public class FinAppGUI extends JFrame {
     }
 
 
-    // REQUIRES:
-    // MODIFIES:
+    // REQUIRES: non-null menu
+    // MODIFIES: theMenu
     // EFFECT: Adds an item with given handler to the given menu
     private void addMenuItem(JMenu theMenu, AbstractAction action, KeyStroke accelerator) {
+
         JMenuItem menuItem = new JMenuItem(action);
-        menuItem.setMnemonic(menuItem.getText().charAt(0));
         menuItem.setAccelerator(accelerator);
         theMenu.add(menuItem);
     }
 
 
-    // REQUIRES:
-    // MODIFIES:
-    // EFFECT:
+    // 3. Accounts Pane
+
+    // MODIFIES: this
+    // EFFECT: sets up the account pane for constructor by listing the existing accounts as press-able buttons
     private void accountsPane() {
+
         accPane = new JPanel();
         accPane.setLayout(new BorderLayout());
+        setBorder(accPane, "Accounts");
+        accPane.setSize(ACCOUNT_PANE_WIDTH, ACCOUNT_PANE_HEIGHT);
+
         JPanel buttonPanel = new JPanel();
-        int numAccounts = master.numberOfAccounts();
-        buttonPanel.setLayout(new GridLayout(numAccounts,1));
+        buttonPanel.setLayout(new GridLayout(master.numberOfAccounts(),1));
+
         for (Account account: master.getAccounts()) {
             JButton btn = new JButton(account.getName());
-            btn.setSize(ACCOUNT_PANE_WIDTH, ACCOUNT_PANE_HEIGHT / numAccounts);
-            btn.addActionListener(new AccountMenuAction(account));
+            btn.setSize(ACCOUNT_PANE_WIDTH, ACCOUNT_PANE_HEIGHT / master.numberOfAccounts());
+            btn.addActionListener(new PressAccountAction(account));
             buttonPanel.add(btn);
         }
-        accPane.add(buttonPanel, BorderLayout.CENTER);
-        setBorder(accPane, "Accounts");
-        accPane.setVisible(true);
-        accPane.setSize(ACCOUNT_PANE_WIDTH, ACCOUNT_PANE_HEIGHT);
+
+        accPane.add(buttonPanel);
         desktop.add(accPane);
     }
 
 
-    // REQUIRES:
-    // MODIFIES:
-    // EFFECT:
+    // 4. Balance Pane
+
+    // MODIFIES: this
+    // EFFECT: sets the balance pane for constructor displaying total (master view) and account (account view) balance
     private void balancePane(boolean isMaster) {
+
         blPane = new JPanel();
         blPane.setLayout(new GridLayout(1, 1));
-        setBorder(blPane, "Balance");
+        setBorder(blPane, "Total Balance");
+
         JLabel balanceText;
 
         if (isMaster) {
-            balanceText = new JLabel((master.getTotalBalance() / 100.0) + " $");
             blPane.setSize(BALANCE_PANE_WIDTH, BALANCE_PANE_HEIGHT);
             blPane.setLocation(MAIN_WIDTH - BALANCE_PANE_WIDTH, 0);
+            balanceText = new JLabel((master.getTotalBalance() / 100.0) + " $");
         } else {
-            balanceText = new JLabel((account.getBalance() / 100.0) + " $");
             blPane.setSize(ACC_BALANCE_WIDTH, ACC_BALANCE_HEIGHT);
             blPane.setLocation(0, 0);
+            balanceText = new JLabel((account.getBalance() / 100.0) + " $");
         }
 
         balanceText.setFont(balanceText.getFont().deriveFont(50f));
         balanceText.setHorizontalAlignment(0);
+
         blPane.add(balanceText, BorderLayout.CENTER);
-
-
-        blPane.setVisible(true);
         desktop.add(blPane);
     }
 
 
-    // REQUIRES:
-    // MODIFIES:
-    // EFFECT:
+    // 5. Transaction Pane
+
+    // MODIFIES: this
+    // EFFECT: sets the transaction pane for constructor displaying list of recent master transaction (master view) and
+    //         account transactions (account view)
     private void transactionsPane(boolean isMaster) {
+
         trPane = new JPanel();
         trPane.setLayout(new GridLayout(1, 1));
         setBorder(trPane, "Transactions");
+
         JTable trTable;
 
+
         if (isMaster) {
-            trTable = fillTrTable(master.getAllTransactions());
             trPane.setSize(TRANSACTION_PANE_WIDTH, TRANSACTION_PANE_HEIGHT);
             trPane.setLocation(0, ACCOUNT_PANE_HEIGHT);
+            trTable = fillTrTable(master.getAllTransactions());
         } else {
-            trTable = fillTrTable(account.getEntries());
             trPane.setSize(ACC_TRANSACTION_WIDTH, ACC_TRANSACTION_HEIGHT);
             trPane.setLocation(0, MAIN_HEIGHT - ACC_TRANSACTION_HEIGHT);
+            trTable = fillTrTable(account.getEntries());
         }
 
 
-        trPane.add(trTable, BorderLayout.CENTER);
-        trPane.setVisible(true);
+        JScrollPane scrollPane = new JScrollPane(trTable);
+        trTable.getTableHeader().setBackground(Color.LIGHT_GRAY);
+        trTable.setShowHorizontalLines(true);
+
+        trPane.add(scrollPane, BorderLayout.CENTER);
         desktop.add(trPane);
     }
 
+
+    // REQUIRES: a non-empty list of transactions
+    // MODIFIES : trTable
+    // EFFECT: given a list of transactions creates and fills a java table
     private JTable fillTrTable(List<Transaction> entries) {
+
         int trNum = max(0, entries.size() - TR_NUM);
         String [][] data = new String[entries.size() - trNum][6];
         List<Transaction> transactions = entries.subList(trNum, entries.size());
+
         for (int i = 0; i < entries.size() - trNum; i++) {
             data[i][0] = Integer.toString(transactions.get(i).getIndex());
             data[i][1] = transactions.get(i).getType();
@@ -219,30 +254,25 @@ public class FinAppGUI extends JFrame {
     }
 
 
+    // 6. Other Helpers:
+
+
+    // REQUIRES: non-null panel
+    // MODIFIES: panel
+    // EFFECT: sets up a border for given panel with a given title
     private void setBorder(JPanel panel, String title) {
         TitledBorder border = new TitledBorder(title);
         border.setTitleJustification(TitledBorder.CENTER);
         border.setTitlePosition(TitledBorder.TOP);
+        border.setTitleColor(Color.BLUE);
         panel.setBorder(border);
     }
 
 
+    // Action Internal Classes:
 
 
-    /**
-     * Helper to centre main application window on desktop
-     */
-    private void centreOnScreen() {
-        int width = Toolkit.getDefaultToolkit().getScreenSize().width;
-        int height = Toolkit.getDefaultToolkit().getScreenSize().height;
-        setLocation((width - getWidth()) / 2, (height - getHeight()) / 2);
-    }
-
-
-    /**
-     * Represents action to be taken when user wants to add a new code
-     * to the system.
-     */
+    // Represents action to be taken when user wants to add a new code to the system.
     private class AddAccountAction extends AbstractAction {
 
         AddAccountAction() {
@@ -554,12 +584,12 @@ public class FinAppGUI extends JFrame {
      * Represents the action to be taken when the user wants to add a new
      * sensor to the system.
      */
-    private class AccountMenuAction extends AbstractAction implements ActionListener {
+    private class PressAccountAction extends AbstractAction implements ActionListener {
 
 
         private Account account;
 
-        AccountMenuAction(Account account) {
+        PressAccountAction(Account account) {
             super(account.getName());
             this.account = account;
         }
