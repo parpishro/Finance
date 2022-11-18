@@ -84,6 +84,9 @@ public class Master implements Savable {
     public void addTransaction(int index, String type, String date, int value, String from, String to) {
         Transaction transaction = new Transaction(index, type, date, value, from, to);
         allTransactions.add(transaction);
+        updateBalance(type, value);
+        this.getAccount(from).addEntry(transaction, true);
+        this.getAccount(to).addEntry(transaction, false);
     }
 
 

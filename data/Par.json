@@ -5,17 +5,9 @@
       "date": "2022-10-15",
       "index": 0,
       "from": "Cash",
-      "to": "Expenditure",
+      "to": "Expense",
       "type": "Spending",
       "value": 1250
-    },
-    {
-      "date": "2022-11-12",
-      "index": 1,
-      "from": "Saving",
-      "to": "Expenditure",
-      "type": "Spending",
-      "value": 2400
     },
     {
       "date": "2022-11-18",
@@ -24,6 +16,22 @@
       "to": "Cash",
       "type": "Transfer",
       "value": 3450
+    },
+    {
+      "date": "2022-11-15",
+      "index": 3,
+      "from": "Cash",
+      "to": "Saving",
+      "type": "Transfer",
+      "value": 3850
+    },
+    {
+      "date": "2022-11-13",
+      "index": 1,
+      "from": "Saving",
+      "to": "Expense",
+      "type": "Spending",
+      "value": 2400
     }
   ],
   "accounts": [
@@ -44,9 +52,41 @@
           "to": "Cash",
           "type": "Transfer",
           "value": 3450
+        },
+        {
+          "date": "2022-11-15",
+          "index": 3,
+          "from": "Cash",
+          "to": "Saving",
+          "type": "Transfer",
+          "value": 3300
+        },
+        {
+          "date": "2022-10-15",
+          "index": 0,
+          "from": "Cash",
+          "to": "Expense",
+          "type": "Spending",
+          "value": 1250
+        },
+        {
+          "date": "2022-11-18",
+          "index": 2,
+          "from": "Saving",
+          "to": "Cash",
+          "type": "Transfer",
+          "value": 3450
+        },
+        {
+          "date": "2022-11-15",
+          "index": 3,
+          "from": "Cash",
+          "to": "Saving",
+          "type": "Transfer",
+          "value": 3850
         }
       ],
-      "balance": 26200,
+      "balance": 21250,
       "isPos": true,
       "name": "Cash",
       "index": 0
@@ -62,17 +102,33 @@
           "value": 1250
         },
         {
+          "date": "2022-10-15",
+          "index": 0,
+          "from": "Cash",
+          "to": "Expense",
+          "type": "Spending",
+          "value": 1250
+        },
+        {
           "date": "2022-11-12",
           "index": 1,
           "from": "Saving",
-          "to": "Expenditure",
+          "to": "Expense",
+          "type": "Spending",
+          "value": 2400
+        },
+        {
+          "date": "2022-11-13",
+          "index": 1,
+          "from": "Saving",
+          "to": "Expense",
           "type": "Spending",
           "value": 2400
         }
       ],
-      "balance": 3650,
+      "balance": 7250,
       "isPos": false,
-      "name": "Expenditure",
+      "name": "Expense",
       "index": 1
     },
     {
@@ -85,10 +141,26 @@
     {
       "entries": [
         {
+          "date": "2022-11-18",
+          "index": 2,
+          "from": "Saving",
+          "to": "Cash",
+          "type": "Transfer",
+          "value": 3450
+        },
+        {
+          "date": "2022-11-15",
+          "index": 3,
+          "from": "Cash",
+          "to": "Saving",
+          "type": "Transfer",
+          "value": 3300
+        },
+        {
           "date": "2022-11-12",
           "index": 1,
           "from": "Saving",
-          "to": "Expenditure",
+          "to": "Expense",
           "type": "Spending",
           "value": 2400
         },
@@ -99,9 +171,25 @@
           "to": "Cash",
           "type": "Transfer",
           "value": 3450
+        },
+        {
+          "date": "2022-11-15",
+          "index": 3,
+          "from": "Cash",
+          "to": "Saving",
+          "type": "Transfer",
+          "value": 3850
+        },
+        {
+          "date": "2022-11-13",
+          "index": 1,
+          "from": "Saving",
+          "to": "Expense",
+          "type": "Spending",
+          "value": 2400
         }
       ],
-      "balance": 4150,
+      "balance": 5450,
       "isPos": true,
       "name": "Saving",
       "index": 3

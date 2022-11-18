@@ -35,7 +35,7 @@ public class FinAppGUI extends JFrame {
     private static final int ACC_TRANSACTION_WIDTH = MAIN_WIDTH;
     private static final int ACC_TRANSACTION_HEIGHT = MAIN_HEIGHT - ACC_BALANCE_HEIGHT;
 
-    private static final int TR_NUM = 3;
+    private static final int TR_NUM = 10;
 
     private static final String MAIN_TITLE = "Finance Manager";
 
@@ -272,235 +272,286 @@ public class FinAppGUI extends JFrame {
     // Action Internal Classes:
 
 
-    // Represents action to be taken when user wants to add a new code to the system.
+    // 2. Adding a New Account
+
+    // Represents action to be taken when user wants to add an account to the master.
     private class AddAccountAction extends AbstractAction {
 
+
+        // EFFECT: constructs add account action class
         AddAccountAction() {
             super("Add Account");
         }
 
+
+        // EFFECT: when add account is selected, start a pop-up menu with fields for new account detail, if Ok was
+        //         selected, removes account, and refresh panes
         @Override
         public void actionPerformed(ActionEvent evt) {
+
+            JPanel addAccount = new JPanel();
             JTextField name = new JTextField(5);
             JTextField pos = new JTextField(5);
             JTextField bal = new JTextField(5);
 
-            JPanel addAccount = new JPanel();
             addAccount.add(new JLabel("Name: "));
             addAccount.add(name);
-            addAccount.add(Box.createHorizontalStrut(15)); // a spacer
+            addAccount.add(Box.createHorizontalStrut(15));
             addAccount.add(new JLabel("Is Positive: "));
             addAccount.add(pos);
-            addAccount.add(Box.createHorizontalStrut(15)); // a spacer
+            addAccount.add(Box.createHorizontalStrut(15));
             addAccount.add(new JLabel("Balance: "));
             addAccount.add(bal);
 
             int result = JOptionPane.showConfirmDialog(null, addAccount,
                     "Please Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
+
             String accountName = name.getText();
             Boolean isPos = Boolean.parseBoolean(pos.getText());
             int balance = (int) (Double.parseDouble(bal.getText()) * 100);
+
             if (result == JOptionPane.OK_OPTION) {
                 Account account = new Account(-1, accountName, isPos, balance);
                 master.addAccount(account);
-
             }
+
             refreshPanes();
         }
 
     }
 
-    /**
-     * Represents action to be taken when user wants to add a new code
-     * to the system.
-     */
+
+    // 3. Removing an Account
+
+
+    // Represents action to be taken when user wants to remove an account from master.
     private class RemoveAccountAction extends AbstractAction {
 
+
+         // EFFECT: constructs remove account action class
         RemoveAccountAction() {
             super("Remove Account");
         }
 
+
+         // EFFECT: when remove account is selected, start a pop-up menu with field for the name of account to be
+         //         removed, if Ok was selected, removes account, and refresh panes
         @Override
         public void actionPerformed(ActionEvent evt) {
-            JTextField name = new JTextField(5);
 
             JPanel removeAccount = new JPanel();
+            JTextField name = new JTextField(5);
+
             removeAccount.add(new JLabel("Name: "));
             removeAccount.add(name);
 
             int result = JOptionPane.showConfirmDialog(null, removeAccount,
                     "Please Enter Account Name", JOptionPane.OK_CANCEL_OPTION);
+
             String accountName = name.getText();
+
             if (result == JOptionPane.OK_OPTION) {
                 master.removeAccount(accountName);
                 desktop.remove(accPane);
                 accountsPane();
             }
+
             refreshPanes();
         }
-
     }
 
-    /**
-     * Represents action to be taken when user wants to add a new code
-     * to the system.
-     */
+
+    // Represents action to be taken when user wants to edit account an information in the master.
     private class EditAccountAction extends AbstractAction {
 
+
+        // EFFECT: constructs edit account action class
         EditAccountAction() {
             super("Edit Account");
         }
 
+
+        // EFFECT: when edit account is selected, start a pop-up menu with fields to edit account detail, if Ok was
+        //         selected, removes account, and refresh panes
         @Override
         public void actionPerformed(ActionEvent evt) {
-            JTextField name = new JTextField(5);
 
             JPanel editAccount = new JPanel();
+            JTextField name = new JTextField(5);
             editAccount.add(new JLabel("Name: "));
             editAccount.add(name);
 
             int result = JOptionPane.showConfirmDialog(null, editAccount,
                     "Please Enter Account Name", JOptionPane.OK_CANCEL_OPTION);
-            String accountName = name.getText();
+
             if (result == JOptionPane.OK_OPTION) {
-                Account account = master.getAccount(accountName);
+                Account account = master.getAccount(name.getText());
                 JTextField index = new JTextField(Integer.toString(account.getIndex()), 5);
                 JTextField newName = new JTextField(account.getName(), 5);
                 JTextField pos = new JTextField(Boolean.toString(account.getIsPos()), 5);
                 JTextField bal = new JTextField(Integer.toString(account.getBalance() / 100),5);
 
-                editAccount = new JPanel();
-                editAccount.add(new JLabel("Index: "));
-                editAccount.add(index);
-                editAccount.add(Box.createHorizontalStrut(15)); // a spacer
-                editAccount.add(new JLabel("Name: "));
-                editAccount.add(newName);
-                editAccount.add(Box.createHorizontalStrut(15)); // a spacer
-                editAccount.add(new JLabel("Is Positive: "));
-                editAccount.add(pos);
-                editAccount.add(Box.createHorizontalStrut(15)); // a spacer
-                editAccount.add(new JLabel("Balance: "));
-                editAccount.add(bal);
+                editAccount = setDefaultInfo(index, newName, pos, bal);
 
-                int result2 = JOptionPane.showConfirmDialog(null, editAccount,
-                        "Please Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
-                if (result2 == JOptionPane.OK_OPTION) {
+                result = JOptionPane.showConfirmDialog(null, editAccount,
+                        "Please Edit Account Information", JOptionPane.OK_CANCEL_OPTION);
+                if (result == JOptionPane.OK_OPTION) {
                     account.setIndex(Integer.parseInt(index.getText()));
                     account.setName(newName.getText());
                     account.setIsPos(Boolean.parseBoolean(pos.getText()));
                     account.setBalance(Integer.parseInt(bal.getText()) * 100);
                 }
             }
+
             refreshPanes();
+        }
+
+
+        // MODIFIES: editAccount
+        // EFFECT: given fields add them to the editing fields as defaults
+        private JPanel setDefaultInfo(JTextField index, JTextField newName, JTextField pos, JTextField bal) {
+
+            JPanel editAccount = new JPanel();
+
+            editAccount.add(new JLabel("Index: "));
+            editAccount.add(index);
+            editAccount.add(Box.createHorizontalStrut(15));
+
+            editAccount.add(new JLabel("Name: "));
+            editAccount.add(newName);
+            editAccount.add(Box.createHorizontalStrut(15));
+
+            editAccount.add(new JLabel("Is Positive: "));
+            editAccount.add(pos);
+            editAccount.add(Box.createHorizontalStrut(15));
+
+            editAccount.add(new JLabel("Balance: "));
+            editAccount.add(bal);
+            return editAccount;
         }
 
     }
 
 
-    private void refreshPanes() {
-        desktop.remove(accPane);
-        accountsPane();
-        desktop.remove(blPane);
-        balancePane(true);
-        desktop.remove(trPane);
-        transactionsPane(true);
-    }
-
-
-    /**
-     * Represents action to be taken when user wants to add a new code
-     * to the system.
-     */
+    // Represents action to be taken when user wants to add a new transaction.
     private class AddEntryAction extends AbstractAction {
 
+
+        // EFFECT: constructs add transaction action class
         AddEntryAction() {
             super("Add Transaction Entry");
         }
 
+
+        // EFFECT: when add transaction is selected, start a pop-up menu with fields to add transaction info, if Ok was
+        //         selected, add the transaction, and refresh panes
         @Override
         public void actionPerformed(ActionEvent evt) {
-            JPanel addEntry = new JPanel();
+
+
             JTextField type = new JTextField(5);
             JTextField date = new JTextField(5);
             JTextField value = new JTextField(5);
             JTextField from = new JTextField(5);
             JTextField to = new JTextField(5);
-            addEntry.add(new JLabel("Type: "));
-            addEntry.add(type);
-            addEntry.add(Box.createHorizontalStrut(15)); // a spacer
-            addEntry.add(new JLabel("Date: "));
-            addEntry.add(date);
-            addEntry.add(Box.createHorizontalStrut(15)); // a spacer
-            addEntry.add(new JLabel("Value: "));
-            addEntry.add(value);
-            addEntry.add(Box.createHorizontalStrut(15)); // a spacer
-            addEntry.add(new JLabel("From: "));
-            addEntry.add(from);
-            addEntry.add(Box.createHorizontalStrut(15)); // a spacer
-            addEntry.add(new JLabel("To: "));
-            addEntry.add(to);
 
+            JPanel addEntry = setEntryFields(type, date, value, from, to);
             int result = JOptionPane.showConfirmDialog(null, addEntry,
                     "Please Enter Transaction Detail", JOptionPane.OK_CANCEL_OPTION);
+
             if (result == JOptionPane.OK_OPTION) {
                 master.addTransaction(new Transaction(-1, type.getText(), date.getText(),
                         (int) (Double.parseDouble(value.getText()) * 100), from.getText(), to.getText()));
             }
+
             refreshPanes();
         }
 
+        private JPanel setEntryFields(JTextField type, JTextField date, JTextField value,
+                                      JTextField from, JTextField to) {
+
+            JPanel addEntry = new JPanel();
+
+            addEntry.add(new JLabel("Type: "));
+            addEntry.add(type);
+            addEntry.add(Box.createHorizontalStrut(15));
+
+            addEntry.add(new JLabel("Date: "));
+            addEntry.add(date);
+            addEntry.add(Box.createHorizontalStrut(15));
+
+            addEntry.add(new JLabel("Value: "));
+            addEntry.add(value);
+            addEntry.add(Box.createHorizontalStrut(15));
+
+            addEntry.add(new JLabel("From: "));
+            addEntry.add(from);
+            addEntry.add(Box.createHorizontalStrut(15));
+
+            addEntry.add(new JLabel("To: "));
+            addEntry.add(to);
+
+            return addEntry;
+        }
     }
 
-    /**
-     * Represents action to be taken when user wants to add a new code
-     * to the system.
-     */
+    // Represents action to be taken when user wants to remove a transaction.
     private class RemoveEntryAction extends AbstractAction {
 
+
+        // EFFECT: constructs remove transaction action class
         RemoveEntryAction() {
             super("Remove Transaction Entry");
         }
 
+
+        // EFFECT: when remoe transaction is selected, start a pop-up menu with the index of the transaction to be
+        //         deleted, if Ok was selected, remove the transaction, and refresh panes
         @Override
         public void actionPerformed(ActionEvent evt) {
-            JTextField index = new JTextField(5);
 
             JPanel removeEntry = new JPanel();
+            JTextField index = new JTextField(5);
             removeEntry.add(new JLabel("Index: "));
             removeEntry.add(index);
 
             int result = JOptionPane.showConfirmDialog(null, removeEntry,
                     "Please Enter the Index of Transaction", JOptionPane.OK_CANCEL_OPTION);
             int entryIndex = Integer.parseInt(index.getText());
+
             if (result == JOptionPane.OK_OPTION) {
                 master.removeTransaction(entryIndex);
             }
+
             refreshPanes();
         }
 
     }
 
-    /**
-     * Represents action to be taken when user wants to add a new code
-     * to the system.
-     */
+    // Represents action to be taken when user wants to edit a transaction.
     private class EditEntryAction extends AbstractAction {
 
+
+        // EFFECT: constructs edit transaction action class
         EditEntryAction() {
             super("Edit Transaction Entry");
         }
 
+
+        // EFFECT: when edit transaction is selected, start a pop-up menu with fields to edit transaction info, if Ok
+        //         was selected, edit the transaction, and refresh panes
         @Override
         public void actionPerformed(ActionEvent evt) {
-            JTextField index = new JTextField(5);
 
             JPanel editEntry = new JPanel();
+            JTextField index = new JTextField(5);
             editEntry.add(new JLabel("Index: "));
             editEntry.add(index);
 
             int result = JOptionPane.showConfirmDialog(null, editEntry,
                     "Please Enter Transaction Index", JOptionPane.OK_CANCEL_OPTION);
             int entryIndex = Integer.parseInt(index.getText());
+
             if (result == JOptionPane.OK_OPTION) {
                 Transaction entry = master.getAllTransactions().get(entryIndex);
                 JTextField changeIndex = new JTextField(Integer.toString(entry.getIndex()), 5);
@@ -510,63 +561,89 @@ public class FinAppGUI extends JFrame {
                 JTextField from = new JTextField(entry.getFrom(), 5);
                 JTextField to = new JTextField(entry.getTo(), 5);
 
-                editEntry = new JPanel();
-                editEntry.add(new JLabel("Index: "));
-                editEntry.add(changeIndex);
-                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
-                editEntry.add(new JLabel("Type: "));
-                editEntry.add(type);
-                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
-                editEntry.add(new JLabel("Date: "));
-                editEntry.add(date);
-                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
-                editEntry.add(new JLabel("Value: "));
-                editEntry.add(value);
-                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
-                editEntry.add(new JLabel("From: "));
-                editEntry.add(from);
-                editEntry.add(Box.createHorizontalStrut(15)); // a spacer
-                editEntry.add(new JLabel("To: "));
-                editEntry.add(to);
-
-                int result2 = JOptionPane.showConfirmDialog(null, editEntry,
+                editEntry = setDefaultFields(changeIndex, type, date, value, from, to);
+                result = JOptionPane.showConfirmDialog(null, editEntry,
                         "Please Edit Transaction Details", JOptionPane.OK_CANCEL_OPTION);
-                if (result2 == JOptionPane.OK_OPTION) {
-                    entry.setIndex(Integer.parseInt(changeIndex.getText()));
-                    entry.setType(type.getText());
-                    entry.setDate(date.getText());
-                    entry.setValue(Integer.parseInt(value.getText()) * 100);
-                    entry.setFrom(from.getText());
-                    entry.setTo(to.getText());
+
+                if (result == JOptionPane.OK_OPTION) {
+                    setFields(entry, changeIndex, type, date, value, from, to);
                 }
             }
 
             refreshPanes();
         }
 
+
+        // MODIFIES: editEntry
+        // EFFECT: set the default fields based on current elements of the transaction
+        private JPanel setDefaultFields(JTextField changeIndex, JTextField type, JTextField date,
+                                        JTextField value, JTextField from, JTextField to) {
+
+            JPanel editEntry;
+
+            editEntry = new JPanel();
+            editEntry.add(new JLabel("Index: "));
+            editEntry.add(changeIndex);
+            editEntry.add(Box.createHorizontalStrut(15));
+
+            editEntry.add(new JLabel("Type: "));
+            editEntry.add(type);
+            editEntry.add(Box.createHorizontalStrut(15));
+
+            editEntry.add(new JLabel("Date: "));
+            editEntry.add(date);
+            editEntry.add(Box.createHorizontalStrut(15));
+
+            editEntry.add(new JLabel("Value: "));
+            editEntry.add(value);
+            editEntry.add(Box.createHorizontalStrut(15));
+
+            editEntry.add(new JLabel("From: "));
+            editEntry.add(from);
+            editEntry.add(Box.createHorizontalStrut(15));
+
+            editEntry.add(new JLabel("To: "));
+            editEntry.add(to);
+
+            return editEntry;
+        }
+
+
+        // MODIFIES: this
+        // EFFECT: remove the entry from master and accounts and create a new entry in master and accounts based on
+        //         user given input
+        private void setFields(Transaction entry, JTextField changeIndex, JTextField type,
+                               JTextField date, JTextField value, JTextField from, JTextField to) {
+
+            master.removeTransaction(entry.getIndex());
+            master.addTransaction(Integer.parseInt(changeIndex.getText()), type.getText(), date.getText(),
+                    (int) (Double.parseDouble(value.getText()) * 100), from.getText(), to.getText());
+        }
     }
 
 
-    /**
-     * Represents action to be taken when user wants to add a new code
-     * to the system.
-     */
+
+    // Represents action to be taken when user selects save button
     private class SaveAction extends AbstractAction {
 
+
+        // EFFECT: constructs a sae action class
         SaveAction() {
             super("Save Data");
         }
 
+
+        // EFFECT: when save is selected, start a pop-up menu to confirm, if Ok was selected, save the information
         @Override
         public void actionPerformed(ActionEvent evt) {
 
             JPanel saveData = new JPanel();
-
             saveData.add(new JLabel("Do you want to save?"));
 
             JsonWriter jsonWriter;
             int result = JOptionPane.showConfirmDialog(null, saveData,
                     "Save Data", JOptionPane.OK_CANCEL_OPTION);
+
             if (result == JOptionPane.OK_OPTION) {
                 try {
                     jsonWriter = new JsonWriter(PATH + master.getUser() + ".json");
@@ -575,27 +652,29 @@ public class FinAppGUI extends JFrame {
                     throw new RuntimeException(e);
                 }
             }
-
         }
-
     }
 
-    /**
-     * Represents the action to be taken when the user wants to add a new
-     * sensor to the system.
-     */
-    private class PressAccountAction extends AbstractAction implements ActionListener {
 
+
+    // Represents the action to be taken when the user selects an account
+    private class PressAccountAction extends AbstractAction implements ActionListener {
 
         private Account account;
 
+
+        // EFFECT: constructs a sae action class
         PressAccountAction(Account account) {
+
             super(account.getName());
             this.account = account;
         }
 
+
+        // EFFECT: when save is selected, start a pop-up menu to confirm, if Ok was selected, save the information
         @Override
         public void actionPerformed(ActionEvent evt) {
+
             evt.getActionCommand();
             accPane.setVisible(false);
             JPanel accFrame = new JPanel();
@@ -606,15 +685,27 @@ public class FinAppGUI extends JFrame {
         }
     }
 
-    /**
-     * Represents action to be taken when user clicks desktop
-     * to switch focus. (Needed for key handling.)
-     */
+
+    // Represents action to be taken when user clicks desktop to switch focus. (Needed for key handling.)
     private class DesktopFocusAction extends MouseAdapter {
+
+        // MODIFIES: this
+        // EFFECT: when user clicks on main window (desktop), focus shifts there.
         @Override
         public void mouseClicked(MouseEvent e) {
+
             FinAppGUI.this.requestFocusInWindow();
         }
+    }
+
+
+    private void refreshPanes() {
+        desktop.remove(accPane);
+        accountsPane();
+        desktop.remove(blPane);
+        balancePane(true);
+        desktop.remove(trPane);
+        transactionsPane(true);
     }
 
 

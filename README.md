@@ -60,7 +60,7 @@ and track specific allocations such as following accounts which is not exhaustiv
 
 Any financial transaction must move value from one account to another with following exceptions. This hypothetical 
 accounts will be created at the beginning to enable earning and spending entries. Their balance represent total earnings
-and total spendings:
+and total spending:
 
 1. Earning bring in value from a hypothetical account "Income"
 2. Spending take out value to a hypothetical account "Expenditure"
@@ -83,19 +83,17 @@ account or for master account. A user can also produce the visualization of the 
 - As a user, I want to be able to add a new account that can hold either a negative (borrowed) or positive (owned) 
 value (add *Account* into *Master*).
 - As a user, I want to be able to enter a financial transaction that is recorded automatically in its associated
-accounts (both 'from' and 'to' accounts must he created before transaction entry) and under a category type  
+accounts (both 'from' and 'to' accounts must be created before transaction entry) and under a category type  
  ( *Earning*, *Spending*, *Transfer*, *Investing*, *Saving*, *Borrowing*, *Lending*). This will be adding 
 **Transaction** to both **Account** records and **Master** records
 - As a user I want to be able to load the master records from an existing file
 - As a new user, I want to be able to create a new master file
-- As a user, I want to be able to save the editted master object into the file
+- As a user, I want to be able to save the edited master object into the file
 - As a user, I want to be able to remove a financial transaction from its associated accounts and master account.
 - As a user, I want to be able to remove an account (balance must be zero) 
-- As a user, i want to be able to view the current balance of an account 
+- As a user, I want to be able to view the current balance of an account 
 - As a user, I want to be able to view a list of transaction in an account.
 - As a user, I want to be able to view a list of transaction in the master account.
-- As a user, I want to be able to view a pie chart of balances (positive) across different accounts  (phase > 1)
-- As a user, I want to be able to view a pie chart of borrowings (negative) across different accounts (phase > 1)
 
 
 
