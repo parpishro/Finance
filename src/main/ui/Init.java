@@ -4,33 +4,49 @@ import model.Master;
 import persistence.JsonReader;
 
 import javax.swing.*;
-
+import java.awt.*;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 
 import static javax.swing.JOptionPane.NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 
+
+// represent the initiation of the app either loading user information or creating a new user
 public class Init {
 
     private static final String PATH = "./data/";
-    private static final String INIT_TITLE = "Start Finance App";
+    private static final String INIT_TITLE = "Finance Manager";
+    private static final Icon ICON = new ImageIcon("./data/moneyIcon.png");
 
     private Master master;
 
+
+
+    // MODIFIES: this
+    // EFFECT: opens a pop-up box to determine whether user is existing or not to load its master or create a new master
     public Init() throws IOException {
+
+        new SplashScreen("./data/coins.jpg");
+
         Object[] options = {"Yes", "No", "Quit"};
-        String title = INIT_TITLE;
         String message = "Are you an existing user?";
-        DialogBox box = new DialogBox(options, title, message);
+        DialogBox box = new DialogBox(options, INIT_TITLE, message);
         int n = box.getAnswer();
         switch (n) {
             case YES_OPTION:
-                String username = JOptionPane.showInputDialog("Please enter your username");
+                String username = (String) JOptionPane.showInputDialog(null,
+                        "Please enter your username",INIT_TITLE, JOptionPane.INFORMATION_MESSAGE, ICON,
+                        null, null);
                 master = runLoader(username);
                 break;
             case NO_OPTION:
-                String newUsername = JOptionPane.showInputDialog("Please enter a username");
+                String newUsername = (String) JOptionPane.showInputDialog(null,
+                        "Please enter a username",INIT_TITLE, JOptionPane.INFORMATION_MESSAGE, ICON,
+                        null, null);
                 master = new Master(newUsername);
                 break;
             default:
@@ -48,29 +64,46 @@ public class Init {
         return master;
     }
 
+
+    // Getters:
+
     public Master getMaster() {
         return master;
     }
 
-    public class DialogBox extends JOptionPane {
 
-        private JFrame box;
-        private int answer;
+    // Inner Class:
 
+    // represents a pop-up dialog box with yes/no/cancel option
+    public static class DialogBox extends JOptionPane {
+
+        private final JFrame box;
+        private final int answer;
+
+
+        // MODIFIES: this
+        // EFFECT: constructs a dialog box with given title and message
         public DialogBox(Object[] options, String title, String message) {
             box = new JFrame();
             box.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             answer = JOptionPane.showOptionDialog(box, message, title,
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, options, options[0]);
+                    ICON, options, options[0]);
         }
+
+
+        // EFFECT: closes the dialog-box upon request
+        public void close() {
+            box.dispatchEvent(new WindowEvent(box, WindowEvent.WINDOW_CLOSING));
+        }
+
+
+        // Getters
 
         public int getAnswer() {
             return answer;
         }
-
-        public void close() {
-            box.dispatchEvent(new WindowEvent(box, WindowEvent.WINDOW_CLOSING));
-        }
     }
+
+
 }

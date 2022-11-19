@@ -1,6 +1,5 @@
 package ui.consule;
 
-import ui.FinAppGUI;
 
 import java.io.IOException;
 

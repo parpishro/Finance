@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import static java.lang.Math.max;
 
 
 // Represents a graphical user interface for finance app
@@ -35,19 +34,16 @@ public class FinAppGUI extends JFrame {
     private static final int ACC_TRANSACTION_WIDTH = MAIN_WIDTH;
     private static final int ACC_TRANSACTION_HEIGHT = MAIN_HEIGHT - ACC_BALANCE_HEIGHT;
 
-    private static final int TR_NUM = 10;
-
     private static final String MAIN_TITLE = "Finance Manager";
 
     private static final String PATH = "./data/";
 
     private JDesktopPane desktop;
-    private JMenuBar menuBar;
     private JPanel accPane;
     private JPanel blPane;
     private JPanel trPane;
 
-    private Master master;
+    private final Master master;
     private Account account;
 
     // EFFECT: constructs a finance app gui with a given master and sets up the frame and its panes
@@ -107,7 +103,7 @@ public class FinAppGUI extends JFrame {
     // EFFECT: Adds the menu bar for constructor's menu() helper with three tab: Account, Transaction, and Save
     private void menu() {
 
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
         JMenu accountMenu = new JMenu("Account");
         addMenuItem(accountMenu, new AddAccountAction(), null);
@@ -174,18 +170,19 @@ public class FinAppGUI extends JFrame {
 
         blPane = new JPanel();
         blPane.setLayout(new GridLayout(1, 1));
-        setBorder(blPane, "Total Balance");
 
         JLabel balanceText;
 
         if (isMaster) {
+            setBorder(blPane, "Total Balance");
             blPane.setSize(BALANCE_PANE_WIDTH, BALANCE_PANE_HEIGHT);
             blPane.setLocation(MAIN_WIDTH - BALANCE_PANE_WIDTH, 0);
             balanceText = new JLabel((master.getTotalBalance() / 100.0) + " $");
         } else {
+            setBorder(blPane, account.getName() + " Balance");
             blPane.setSize(ACC_BALANCE_WIDTH, ACC_BALANCE_HEIGHT);
-            blPane.setLocation(0, 0);
             balanceText = new JLabel((account.getBalance() / 100.0) + " $");
+            addBackButton();
         }
 
         balanceText.setFont(balanceText.getFont().deriveFont(50f));
@@ -193,6 +190,18 @@ public class FinAppGUI extends JFrame {
 
         blPane.add(balanceText, BorderLayout.CENTER);
         desktop.add(blPane);
+    }
+
+
+    // MODIFIES: this
+    // EFFECT: adds a back button in account view to the top left balance pane
+    private void addBackButton() {
+        JButton backBtn;
+        backBtn = new JButton("Back");
+        backBtn.setSize(10, 10);
+        backBtn.setLocation(5, 5);
+        backBtn.addActionListener(new BackButtonAction());
+        blPane.add(backBtn);
     }
 
 
@@ -216,7 +225,7 @@ public class FinAppGUI extends JFrame {
             trTable = fillTrTable(master.getAllTransactions());
         } else {
             trPane.setSize(ACC_TRANSACTION_WIDTH, ACC_TRANSACTION_HEIGHT);
-            trPane.setLocation(0, MAIN_HEIGHT - ACC_TRANSACTION_HEIGHT);
+            trPane.setLocation(0, ACC_BALANCE_HEIGHT);
             trTable = fillTrTable(account.getEntries());
         }
 
@@ -235,11 +244,10 @@ public class FinAppGUI extends JFrame {
     // EFFECT: given a list of transactions creates and fills a java table
     private JTable fillTrTable(List<Transaction> entries) {
 
-        int trNum = max(0, entries.size() - TR_NUM);
-        String [][] data = new String[entries.size() - trNum][6];
-        List<Transaction> transactions = entries.subList(trNum, entries.size());
+        String [][] data = new String[entries.size()][6];
+        List<Transaction> transactions = entries.subList(0, entries.size());
 
-        for (int i = 0; i < entries.size() - trNum; i++) {
+        for (int i = 0; i < entries.size(); i++) {
             data[i][0] = Integer.toString(transactions.get(i).getIndex());
             data[i][1] = transactions.get(i).getType();
             data[i][2] = transactions.get(i).getDate();
@@ -249,8 +257,7 @@ public class FinAppGUI extends JFrame {
         }
 
         String[] columnNames = { "Index", "Type", "Date", "Value", "From", "To"};
-        JTable trTable = new JTable(data, columnNames);
-        return trTable;
+        return new JTable(data, columnNames);
     }
 
 
@@ -307,7 +314,7 @@ public class FinAppGUI extends JFrame {
                     "Please Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
 
             String accountName = name.getText();
-            Boolean isPos = Boolean.parseBoolean(pos.getText());
+            boolean isPos = Boolean.parseBoolean(pos.getText());
             int balance = (int) (Double.parseDouble(bal.getText()) * 100);
 
             if (result == JOptionPane.OK_OPTION) {
@@ -315,7 +322,7 @@ public class FinAppGUI extends JFrame {
                 master.addAccount(account);
             }
 
-            refreshPanes();
+            refreshPanes(true);
         }
 
     }
@@ -356,7 +363,7 @@ public class FinAppGUI extends JFrame {
                 accountsPane();
             }
 
-            refreshPanes();
+            refreshPanes(true);
         }
     }
 
@@ -403,7 +410,7 @@ public class FinAppGUI extends JFrame {
                 }
             }
 
-            refreshPanes();
+            refreshPanes(true);
         }
 
 
@@ -464,7 +471,7 @@ public class FinAppGUI extends JFrame {
                         (int) (Double.parseDouble(value.getText()) * 100), from.getText(), to.getText()));
             }
 
-            refreshPanes();
+            refreshPanes(true);
         }
 
         private JPanel setEntryFields(JTextField type, JTextField date, JTextField value,
@@ -505,7 +512,7 @@ public class FinAppGUI extends JFrame {
         }
 
 
-        // EFFECT: when remoe transaction is selected, start a pop-up menu with the index of the transaction to be
+        // EFFECT: when remove transaction is selected, start a pop-up menu with the index of the transaction to be
         //         deleted, if Ok was selected, remove the transaction, and refresh panes
         @Override
         public void actionPerformed(ActionEvent evt) {
@@ -523,7 +530,7 @@ public class FinAppGUI extends JFrame {
                 master.removeTransaction(entryIndex);
             }
 
-            refreshPanes();
+            refreshPanes(true);
         }
 
     }
@@ -570,7 +577,7 @@ public class FinAppGUI extends JFrame {
                 }
             }
 
-            refreshPanes();
+            refreshPanes(true);
         }
 
 
@@ -660,14 +667,11 @@ public class FinAppGUI extends JFrame {
     // Represents the action to be taken when the user selects an account
     private class PressAccountAction extends AbstractAction implements ActionListener {
 
-        private Account account;
-
 
         // EFFECT: constructs a sae action class
         PressAccountAction(Account account) {
 
             super(account.getName());
-            this.account = account;
         }
 
 
@@ -675,13 +679,32 @@ public class FinAppGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent evt) {
 
-            evt.getActionCommand();
+            account = master.getAccount(evt.getActionCommand());
             accPane.setVisible(false);
-            JPanel accFrame = new JPanel();
-            accFrame.setVisible(true);
-            accFrame.setSize(ACCOUNT_PANE_WIDTH, ACCOUNT_PANE_HEIGHT);
-            desktop.add(accFrame, BorderLayout.WEST);
-            setBorder(accFrame, account.getName());
+            blPane.setVisible(false);
+            trPane.setVisible(false);
+            refreshPanes(false);
+        }
+    }
+
+
+    //
+    private class BackButtonAction extends AbstractAction implements ActionListener {
+
+        // EFFECT: constructs a sae action class
+        BackButtonAction() {
+
+            super(master.getUser());
+        }
+
+
+        // EFFECT: when back button is selected, revert to the master view and refresh the pane
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+
+            blPane.setVisible(false);
+            trPane.setVisible(false);
+            refreshPanes(true);
         }
     }
 
@@ -698,16 +721,22 @@ public class FinAppGUI extends JFrame {
         }
     }
 
+    // Internal Class Helpers:
 
-    private void refreshPanes() {
-        desktop.remove(accPane);
-        accountsPane();
-        desktop.remove(blPane);
-        balancePane(true);
-        desktop.remove(trPane);
-        transactionsPane(true);
+
+    // MODIFIES: this
+    // EFFECT: refresh panes with new information when anything changes
+    private void refreshPanes(boolean isMaster) {
+        if (isMaster) {
+            accountsPane();
+            balancePane(true);
+            transactionsPane(true);
+        } else {
+            balancePane(false);
+            transactionsPane(false);
+            setVisible(true);
+        }
+
     }
-
-
 }
 
