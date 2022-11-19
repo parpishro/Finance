@@ -96,7 +96,19 @@ accounts (both 'from' and 'to' accounts must be created before transaction entry
 - As a user, I want to be able to view a list of transaction in the master account.
 
 
+**Instructions for Grader:**
 
+- You can generate the first required event related to adding accounts to a master by choosing add account from the menu. 
+  Then a pop-up menu will open for you to enter the account details. After selecting Ok, the new account will be added
+  to the account list in the top left of the main page. 
+- You can generate the second required event related to adding Transaction entry to an account by selecting "add 
+  transaction" to the account, then a pop-up will open and after entering the info and selecting ok, it will be added to
+  the transaction list at the bottom of the main page.
+- You can locate my visual component in the beginning of the app as splash screen which stays for 5 second before 
+  initiating the app. Moreover, I have an icon image that is used in dialog boxes. Both images are in data folder.
+- You can save the state of my application by selecting "save" from the menu bar at the top.
+- You can reload the state of my application by selecting an existing username and then enter the username (currently 
+  Par) which will load the master file for Par. Alternatively you can create a new username.
 
 
 
