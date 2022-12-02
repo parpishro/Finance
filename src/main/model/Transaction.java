@@ -29,26 +29,32 @@ public class Transaction implements Savable {
 
     public void setIndex(int index) {
         this.index = index;
+        EventLog.getInstance().logEvent(new Event("Index of a transaction entry was edited"));
     }
 
     public void setType(String type) {
         this.type = type;
+        EventLog.getInstance().logEvent(new Event("Type of a transaction entry was edited"));
     }
 
     public void setDate(String date) {
         this.date = date;
+        EventLog.getInstance().logEvent(new Event("Date of a transaction entry was edited"));
     }
 
     public void setValue(int value) {
         this.value = value;
+        EventLog.getInstance().logEvent(new Event("Value of a transaction entry was edited"));
     }
 
     public void setFrom(String from) {
         this.from = from;
+        EventLog.getInstance().logEvent(new Event("From account of a transaction entry was edited"));
     }
 
     public void setTo(String to) {
         this.to = to;
+        EventLog.getInstance().logEvent(new Event("To account of a transaction entry was edited"));
     }
 
 

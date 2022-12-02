@@ -39,6 +39,8 @@ public class Master implements Savable {
         account.setIndex(index);
         accounts.add(account);
         totalBalance += account.getBalance();
+        EventLog.getInstance().logEvent(new Event(account.getName()
+                + " account was added and total balance was updated"));
     }
 
     // REQUIRES: given account name must be a (existing) account name, for the given account balance = 0
@@ -49,6 +51,8 @@ public class Master implements Savable {
         for (Account account: accounts) {
             if (account.getName().equals(name)) {
                 accounts.remove(listIndex);
+                EventLog.getInstance().logEvent(
+                        new Event(name + " account was removed and total balance was updated"));
                 break;
             }
             listIndex++;
@@ -72,6 +76,8 @@ public class Master implements Savable {
         entry.setIndex(index);
         allTransactions.add(entry);
         updateBalance(entry.getType(), entry.getValue());
+        EventLog.getInstance().logEvent(
+                new Event("New transaction entry was added to allTransaction and total balance was updated"));
         this.getAccount(entry.getFrom()).addEntry(entry, true);
         this.getAccount(entry.getTo()).addEntry(entry, false);
     }
@@ -85,6 +91,8 @@ public class Master implements Savable {
         Transaction transaction = new Transaction(index, type, date, value, from, to);
         allTransactions.add(transaction);
         updateBalance(type, value);
+        EventLog.getInstance().logEvent(
+                new Event("New transaction entry was added to allTransaction and total balance was updated"));
     }
 
 
@@ -98,6 +106,9 @@ public class Master implements Savable {
             if (entry.getIndex() == index) {
                 allTransactions.remove(listIndex);
                 updateBalance(entry.getType(), -entry.getValue());
+                EventLog.getInstance().logEvent(
+                        new Event("A transaction entry was removed to allTransaction "
+                                + "and total balance was updated"));
                 this.getAccount(entry.getFrom()).removeEntry(index, false);
                 this.getAccount(entry.getTo()).removeEntry(index, true);
                 break;
@@ -171,6 +182,8 @@ public class Master implements Savable {
 
     public void setTotalBalance(int totalBalance) {
         this.totalBalance = totalBalance;
+        EventLog.getInstance().logEvent(
+                new Event("Set total balance manually"));
     }
 
     // serialization

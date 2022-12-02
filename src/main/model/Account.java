@@ -44,6 +44,9 @@ public class Account implements Savable {
     public void addEntry(Transaction entry, boolean subtract) {
         entries.add(entry);
         setBalance(entry.getValue(), subtract);
+        EventLog.getInstance().logEvent(new Event("A transaction entry was added to "
+                + name
+                + " account and its balance was updated"));
     }
 
     // REQUIRE: Given index must be a valid (existing) entry index of the account.
@@ -56,6 +59,10 @@ public class Account implements Savable {
             if (entry.getIndex() == index) {
                 entries.remove(listIndex);
                 setBalance(entry.getValue(), subtract);
+                EventLog.getInstance().logEvent(
+                        new Event("A transaction entry was removed from "
+                                + name
+                                + " account and its balance was updated"));
                 break;
             }
             listIndex++;
@@ -77,6 +84,7 @@ public class Account implements Savable {
     // EFFECT: set balance manually (mainly to edit a mistake in initialization of a new account)
     public void setBalance(int amount) {
         balance = amount;
+        EventLog.getInstance().logEvent(new Event("Balance of " + name + " account was updated manually"));
     }
 
     // REQUIRES: unique index (non-repeating)
@@ -84,6 +92,7 @@ public class Account implements Savable {
     // EFFECT: edits the index of an account
     public void setIndex(int index) {
         this.index = index;
+        EventLog.getInstance().logEvent(new Event("Index of " + name + " account was edited"));
     }
 
     // REQUIRES: unique name (non-repeating)
@@ -91,12 +100,14 @@ public class Account implements Savable {
     // EFFECT: edits the name of an account
     public void setName(String name) {
         this.name = name;
+        EventLog.getInstance().logEvent(new Event("Name of " + this.name + " account was edited"));
     }
 
     // MODIFIES: this
     // EFFECT: edits the isPos status of an account
     public void setIsPos(boolean isPos) {
         this.isPos = isPos;
+        EventLog.getInstance().logEvent(new Event("IsPos of " + name + " account was edited"));
     }
 
     // getters
