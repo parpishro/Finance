@@ -1,15 +1,11 @@
-package ui;
+package ui.gui;
 
 import model.Master;
 import persistence.JsonReader;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 
 import static javax.swing.JOptionPane.NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;

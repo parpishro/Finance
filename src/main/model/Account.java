@@ -2,7 +2,6 @@ package model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import persistence.Savable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,6 @@ public class Account implements Savable {
     // EFFECT: set balance manually (mainly to edit a mistake in initialization of a new account)
     public void setBalance(int amount) {
         balance = amount;
-        EventLog.getInstance().logEvent(new Event("Balance of " + name + " account was updated manually"));
     }
 
     // REQUIRES: unique index (non-repeating)

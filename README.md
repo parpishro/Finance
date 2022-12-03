@@ -98,6 +98,9 @@ accounts (both 'from' and 'to' accounts must be created before transaction entry
 
 **Instructions for Grader:**
 
+*When starting application, you can load an existing user's data ("Par" is the name of the user that has its Json data 
+in the project) or you can create a new user*
+
 - You can generate the first required event related to adding accounts to a master by choosing add account from the menu. 
   Then a pop-up menu will open for you to enter the account details. After selecting Ok, the new account will be added
   to the account list in the top left of the main page. 
@@ -111,5 +114,61 @@ accounts (both 'from' and 'to' accounts must be created before transaction entry
   Par) which will load the master file for Par. Alternatively you can create a new username.
 
 
+**Phase 4: Task 2**
+
+*Please note that when application is started and accounts are loaded, the LogEvent class logs the existing accounts
+as they are added to the master. Therefore, below log represents both persistence and application operations.*
+
+
+Cash account was added and total balance was updated
+
+Fri Dec 02 21:24:39 PST 2022
+Expense account was added and total balance was updated
+
+Fri Dec 02 21:24:39 PST 2022
+Saving account was added and total balance was updated
+
+Fri Dec 02 21:25:16 PST 2022
+New transaction entry was added to allTransaction and total balance was updated
+
+Fri Dec 02 21:25:16 PST 2022
+A transaction entry was added to Cash account and its balance was updated
+
+Fri Dec 02 21:25:16 PST 2022
+A transaction entry was added to Expense account and its balance was updated
+
+Fri Dec 02 21:25:52 PST 2022
+New transaction entry was added to allTransaction and total balance was updated
+
+Fri Dec 02 21:25:52 PST 2022
+A transaction entry was added to Cash account and its balance was updated
+
+Fri Dec 02 21:25:52 PST 2022
+A transaction entry was added to Saving account and its balance was updated
+
+Fri Dec 02 21:26:26 PST 2022
+Income account was added and total balance was updated
+
+Fri Dec 02 21:28:01 PST 2022
+New transaction entry was added to allTransaction and total balance was updated
+
+Fri Dec 02 21:28:01 PST 2022
+A transaction entry was added to Income account and its balance was updated
+
+Fri Dec 02 21:28:01 PST 2022
+A transaction entry was added to Saving account and its balance was updated
+
+
+
+**Phase 4: Task 3**
+
+- There are quite a bit of duplication between Transaction and Account classes' methods and fields.
+- There are also duplication between Account and Master classes' methods and fields.
+- If I had more time, I would refactor those into an interface, or perhaps an abstract class.
+- The final, FinAppGUI class contains all the behaviours of the panes, and it has become very large.
+- If I had more time, I would make different classes for balance, transaction, account panes, and save and print options.
+- Despite reducing the dependency between classes as much as I could, there are still some of unnecessary dependency.
+- Because of the way I implemented persistence, I had to reimplement some model classes' methods with different 
+ arguments. If I had more time, I would refactor those to reduce the duplication.
 
 

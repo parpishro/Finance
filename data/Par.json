@@ -1,149 +1,107 @@
 {
-  "totalBalance": 36570,
+  "totalBalance": 69200,
   "allTransactions": [
     {
-      "date": "2022-10-15",
+      "date": "2022-12-01",
       "index": 0,
       "from": "Cash",
       "to": "Expense",
       "type": "Spending",
-      "value": 1250
+      "value": 5200
     },
     {
-      "date": "2022-11-13",
+      "date": "2022-12-18",
       "index": 1,
-      "from": "Saving",
-      "to": "Expense",
-      "type": "Spending",
-      "value": 2400
-    },
-    {
-      "date": "2022-11-18",
-      "index": 2,
-      "from": "Saving",
-      "to": "Cash",
-      "type": "Transfer",
-      "value": 3450
-    },
-    {
-      "date": "2022-11-15",
-      "index": 3,
       "from": "Cash",
       "to": "Saving",
       "type": "Transfer",
-      "value": 3850
+      "value": 15000
     },
     {
-      "date": "2022-12-02",
-      "index": 4,
-      "from": "Saving",
-      "to": "Investment",
-      "type": "Transfer",
-      "value": 2500
+      "date": "2022-12-22",
+      "index": 2,
+      "from": "Income",
+      "to": "Saving",
+      "type": "Earning",
+      "value": 24400
     }
   ],
   "accounts": [
     {
       "entries": [
         {
-          "date": "2022-10-15",
+          "date": "2022-12-01",
           "index": 0,
           "from": "Cash",
           "to": "Expense",
           "type": "Spending",
-          "value": 1250
+          "value": 5200
         },
         {
-          "date": "2022-11-18",
-          "index": 2,
-          "from": "Saving",
-          "to": "Cash",
+          "date": "2022-12-18",
+          "index": 1,
+          "from": "Cash",
+          "to": "Saving",
           "type": "Transfer",
-          "value": 3450
+          "value": 15000
         }
       ],
-      "balance": 21250,
+      "balance": 29800,
       "isPos": true,
       "name": "Cash",
       "index": 0
     },
     {
-      "entries": [
-        {
-          "date": "2022-10-15",
-          "index": 0,
-          "from": "Cash",
-          "to": "Expenditure",
-          "type": "Spending",
-          "value": 1250
-        },
-        {
-          "date": "2022-11-13",
-          "index": 1,
-          "from": "Saving",
-          "to": "Expense",
-          "type": "Spending",
-          "value": 2400
-        }
-      ],
-      "balance": 7250,
-      "isPos": false,
+      "entries": [{
+        "date": "2022-12-01",
+        "index": 0,
+        "from": "Cash",
+        "to": "Expense",
+        "type": "Spending",
+        "value": 5200
+      }],
+      "balance": 5200,
+      "isPos": true,
       "name": "Expense",
       "index": 1
     },
     {
-      "entries": [],
-      "balance": 0,
-      "isPos": false,
-      "name": "Credit",
-      "index": 2
-    },
-    {
       "entries": [
         {
-          "date": "2022-11-12",
+          "date": "2022-12-18",
           "index": 1,
-          "from": "Saving",
-          "to": "Expense",
-          "type": "Spending",
-          "value": 2400
-        },
-        {
-          "date": "2022-11-18",
-          "index": 2,
-          "from": "Saving",
-          "to": "Cash",
-          "type": "Transfer",
-          "value": 3450
-        },
-        {
-          "date": "2022-11-15",
-          "index": 3,
           "from": "Cash",
           "to": "Saving",
           "type": "Transfer",
-          "value": 3850
+          "value": 15000
         },
         {
-          "date": "2022-12-02",
-          "index": 4,
-          "from": "Saving",
-          "to": "Investment",
-          "type": "Transfer",
-          "value": 2500
+          "date": "2022-12-22",
+          "index": 2,
+          "from": "Income",
+          "to": "Saving",
+          "type": "Earning",
+          "value": 24400
         }
       ],
-      "balance": 2950,
+      "balance": 39400,
       "isPos": true,
       "name": "Saving",
-      "index": 3
+      "index": 2
     },
     {
-      "entries": [],
-      "balance": 5000,
-      "isPos": true,
-      "name": "Investment",
-      "index": 4
+      "entries": [{
+        "date": "2022-12-22",
+        "index": 2,
+        "from": "Income",
+        "to": "Saving",
+        "type": "Earning",
+        "value": 24400
+      }],
+      "balance": -24400,
+      "isPos": false,
+      "name": "Income",
+      "index": 3
     }
   ],
   "user": "Par"

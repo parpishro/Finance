@@ -1,7 +1,6 @@
 package model;
 
 import org.json.JSONObject;
-import persistence.Savable;
 
 // Represents a single transaction entry containing index, type, date, value, and from/to accounts
 public class Transaction implements Savable {

@@ -1,4 +1,4 @@
-package ui;
+package ui.gui;
 
 import model.Account;
 import model.EventLog;
@@ -37,7 +37,7 @@ public class FinAppGUI extends JFrame {
     private static final String PATH = "./data/";
 
 
-    private final JDesktopPane desktop;
+    private JDesktopPane desktop;
     private JPanel accPane;
     private JPanel blPane;
     private JPanel trPane;
@@ -49,9 +49,6 @@ public class FinAppGUI extends JFrame {
     public FinAppGUI(Master master) {
 
         this.master = master;
-
-        desktop = new JDesktopPane();
-        setContentPane(desktop);
 
         setupMain();
         setupPanes();
@@ -71,6 +68,8 @@ public class FinAppGUI extends JFrame {
     // EFFECT: sets up the main desktop panel with a title and dimension for constructor
     private void setupMain() {
 
+        desktop = new JDesktopPane();
+        setContentPane(desktop);
         desktop.addMouseListener(new DesktopFocusAction());
 
         setTitle(MAIN_TITLE);
@@ -79,21 +78,15 @@ public class FinAppGUI extends JFrame {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         centreOnScreen();
 
-
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent event) {
-                if (JOptionPane.showConfirmDialog(desktop,
-                        "Do you want to save before quiting?", "Please confirm",
-                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-
-                    JsonWriter jsonWriter;
-                    try {
-                        jsonWriter = new JsonWriter(PATH + master.getUser() + ".json");
-                        jsonWriter.save(master);
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
+                JsonWriter jsonWriter;
+                try {
+                    jsonWriter = new JsonWriter(PATH + master.getUser() + ".json");
+                    jsonWriter.save(master);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
                 (new LogPrinter()).printLog(EventLog.getInstance());
                 System.exit(0);

@@ -2,7 +2,6 @@ package model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import persistence.Savable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class Master implements Savable {
         for (Account account: accounts) {
             if (account.getName().equals(name)) {
                 accounts.remove(listIndex);
-                totalBalance += account.getBalance();
+                totalBalance -= account.getBalance();
                 EventLog.getInstance().logEvent(
                         new Event(name + " account was removed and total balance was updated"));
                 break;
@@ -106,7 +105,7 @@ public class Master implements Savable {
                 allTransactions.remove(listIndex);
                 updateBalance(entry.getType(), -entry.getValue());
                 EventLog.getInstance().logEvent(
-                        new Event("A transaction entry was removed to allTransaction "
+                        new Event("A transaction entry was removed from allTransaction "
                                 + "and total balance was updated"));
                 this.getAccount(entry.getFrom()).removeEntry(index, false);
                 this.getAccount(entry.getTo()).removeEntry(index, true);
@@ -181,8 +180,6 @@ public class Master implements Savable {
 
     public void setTotalBalance(int totalBalance) {
         this.totalBalance = totalBalance;
-        EventLog.getInstance().logEvent(
-                new Event("Set total balance manually"));
     }
 
     // serialization
