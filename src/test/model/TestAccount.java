@@ -21,6 +21,7 @@ public class TestAccount {
 
     @BeforeEach
     void runBefore() {
+        EventLog.getInstance().clear();
         acc1 = new Account(1, "Cash", true, 1000);
         acc2 = new Account(2, "Bank", true, 20000);
         acc3 = new Account(3, "Expenditure", true, 0);
