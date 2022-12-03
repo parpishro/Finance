@@ -1,5 +1,5 @@
 {
-  "totalBalance": 30350,
+  "totalBalance": 36570,
   "allTransactions": [
     {
       "date": "2022-10-15",
@@ -32,6 +32,14 @@
       "to": "Saving",
       "type": "Transfer",
       "value": 3850
+    },
+    {
+      "date": "2022-12-02",
+      "index": 4,
+      "from": "Saving",
+      "to": "Investment",
+      "type": "Transfer",
+      "value": 2500
     }
   ],
   "accounts": [
@@ -115,12 +123,27 @@
           "to": "Saving",
           "type": "Transfer",
           "value": 3850
+        },
+        {
+          "date": "2022-12-02",
+          "index": 4,
+          "from": "Saving",
+          "to": "Investment",
+          "type": "Transfer",
+          "value": 2500
         }
       ],
-      "balance": 5450,
+      "balance": 2950,
       "isPos": true,
       "name": "Saving",
       "index": 3
+    },
+    {
+      "entries": [],
+      "balance": 5000,
+      "isPos": true,
+      "name": "Investment",
+      "index": 4
     }
   ],
   "user": "Par"

@@ -1,11 +1,13 @@
-package ui.consule;
+package ui.console;
 
+
+import ui.console.FinAppCUI;
 
 import java.io.IOException;
 
 // starts the application
-public class Main {
+public class MainConsole {
     public static void main(String[] args) throws IOException {
-        new FinanceApp();
+        new FinAppCUI();
     }
 }

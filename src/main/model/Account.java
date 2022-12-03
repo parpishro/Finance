@@ -92,7 +92,6 @@ public class Account implements Savable {
     // EFFECT: edits the index of an account
     public void setIndex(int index) {
         this.index = index;
-        EventLog.getInstance().logEvent(new Event("Index of " + name + " account was edited"));
     }
 
     // REQUIRES: unique name (non-repeating)
@@ -100,14 +99,12 @@ public class Account implements Savable {
     // EFFECT: edits the name of an account
     public void setName(String name) {
         this.name = name;
-        EventLog.getInstance().logEvent(new Event("Name of " + this.name + " account was edited"));
     }
 
     // MODIFIES: this
     // EFFECT: edits the isPos status of an account
     public void setIsPos(boolean isPos) {
         this.isPos = isPos;
-        EventLog.getInstance().logEvent(new Event("IsPos of " + name + " account was edited"));
     }
 
     // getters

@@ -1,4 +1,4 @@
-package ui.consule;
+package ui.console;
 
 import model.Account;
 import model.Master;
@@ -14,7 +14,7 @@ import java.util.Scanner;
 import static java.lang.Math.max;
 
 // user interface of the app that gets commands and information from the user and display, edit, load, or save records
-public class FinanceApp {
+public class FinAppCUI {
     private static final String PATH = "./data/";
     private Master master;
     private final Scanner input;
@@ -24,7 +24,7 @@ public class FinanceApp {
     // EFFECT: construct a FinanceApp object which asks user whether to run the app after loading an existing file (y),
     //         or to run the app after creating a new master object (n), or in the case of invalid code, informs the
     //         user and provides the option to quit (q).
-    public FinanceApp() throws IOException {
+    public FinAppCUI() throws IOException {
         input = new Scanner(System.in);
         continuing = true;
         while (continuing) {

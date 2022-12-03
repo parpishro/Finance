@@ -1,6 +1,7 @@
 package ui;
 
 import model.Account;
+import model.EventLog;
 import model.Master;
 import model.Transaction;
 import persistence.JsonWriter;
@@ -8,10 +9,7 @@ import persistence.JsonWriter;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -38,7 +36,8 @@ public class FinAppGUI extends JFrame {
 
     private static final String PATH = "./data/";
 
-    private JDesktopPane desktop;
+
+    private final JDesktopPane desktop;
     private JPanel accPane;
     private JPanel blPane;
     private JPanel trPane;
@@ -51,10 +50,17 @@ public class FinAppGUI extends JFrame {
 
         this.master = master;
 
+        desktop = new JDesktopPane();
+        setContentPane(desktop);
+
         setupMain();
         setupPanes();
         setVisible(true);
     }
+
+
+
+
 
 
     // Constructor Helpers:
@@ -65,16 +71,38 @@ public class FinAppGUI extends JFrame {
     // EFFECT: sets up the main desktop panel with a title and dimension for constructor
     private void setupMain() {
 
-        desktop = new JDesktopPane();
-        setContentPane(desktop);
         desktop.addMouseListener(new DesktopFocusAction());
 
         setTitle(MAIN_TITLE);
         setSize(MAIN_WIDTH, MAIN_HEIGHT);
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         centreOnScreen();
+
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                if (JOptionPane.showConfirmDialog(desktop,
+                        "Do you want to save before quiting?", "Please confirm",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+
+                    JsonWriter jsonWriter;
+                    try {
+                        jsonWriter = new JsonWriter(PATH + master.getUser() + ".json");
+                        jsonWriter.save(master);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                (new LogPrinter()).printLog(EventLog.getInstance());
+                System.exit(0);
+            }
+        });
     }
+
+
+
 
 
     // MODIFIES: this
@@ -359,11 +387,10 @@ public class FinAppGUI extends JFrame {
 
             if (result == JOptionPane.OK_OPTION) {
                 master.removeAccount(accountName);
-                desktop.remove(accPane);
-                accountsPane();
+                refreshPanes(true);
             }
 
-            refreshPanes(true);
+
         }
     }
 
@@ -727,6 +754,9 @@ public class FinAppGUI extends JFrame {
     // MODIFIES: this
     // EFFECT: refresh panes with new information when anything changes
     private void refreshPanes(boolean isMaster) {
+        desktop.remove(accPane);
+        desktop.remove(blPane);
+        desktop.remove(trPane);
         if (isMaster) {
             accountsPane();
             balancePane(true);
@@ -738,5 +768,7 @@ public class FinAppGUI extends JFrame {
         }
 
     }
+
+
 }
 

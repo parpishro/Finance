@@ -51,6 +51,7 @@ public class Master implements Savable {
         for (Account account: accounts) {
             if (account.getName().equals(name)) {
                 accounts.remove(listIndex);
+                totalBalance += account.getBalance();
                 EventLog.getInstance().logEvent(
                         new Event(name + " account was removed and total balance was updated"));
                 break;
@@ -91,8 +92,6 @@ public class Master implements Savable {
         Transaction transaction = new Transaction(index, type, date, value, from, to);
         allTransactions.add(transaction);
         updateBalance(type, value);
-        EventLog.getInstance().logEvent(
-                new Event("New transaction entry was added to allTransaction and total balance was updated"));
     }
 
 
