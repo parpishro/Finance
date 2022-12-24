@@ -77,26 +77,8 @@ account or for master account. A user can also produce the visualization of the 
 
 
 
-## User Stories
 
-
-- As a user, I want to be able to add a new account that can hold either a negative (borrowed) or positive (owned) 
-value (add *Account* into *Master*).
-- As a user, I want to be able to enter a financial transaction that is recorded automatically in its associated
-accounts (both 'from' and 'to' accounts must be created before transaction entry) and under a category type  
- ( *Earning*, *Spending*, *Transfer*, *Investing*, *Saving*, *Borrowing*, *Lending*). This will be adding 
-**Transaction** to both **Account** records and **Master** records
-- As a user I want to be able to load the master records from an existing file
-- As a new user, I want to be able to create a new master file
-- As a user, I want to be able to save the edited master object into the file
-- As a user, I want to be able to remove a financial transaction from its associated accounts and master account.
-- As a user, I want to be able to remove an account (balance must be zero) 
-- As a user, I want to be able to view the current balance of an account 
-- As a user, I want to be able to view a list of transaction in an account.
-- As a user, I want to be able to view a list of transaction in the master account.
-
-
-**Instructions for Grader:**
+**Instructions for Starting the App:**
 
 *When starting application, you can load an existing user's data ("Par" is the name of the user that has its Json data 
 in the project) or you can create a new user*
@@ -114,7 +96,7 @@ in the project) or you can create a new user*
   Par) which will load the master file for Par. Alternatively you can create a new username.
 
 
-**Phase 4: Task 2**
+**Example of Log**
 
 *Please note that when application is started and accounts are loaded, the LogEvent class logs the existing accounts
 as they are added to the master. Therefore, below log represents both persistence and application operations.*
@@ -160,7 +142,7 @@ A transaction entry was added to Saving account and its balance was updated
 
 
 
-**Phase 4: Task 3**
+**Future Modifications**
 
 - There are quite a bit of duplication between Transaction and Account classes' methods and fields.
 - There are also duplication between Account and Master classes' methods and fields.
